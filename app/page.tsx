@@ -33,7 +33,7 @@ export default function App() {
 
   return (
     <main>
-      <h1>My todos</h1>
+      <h1>zc todos</h1>
       <button onClick={createTodo}>+ new</button>
       <ul>
         {todos.map((todo) => (
