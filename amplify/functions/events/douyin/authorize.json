@@ -1,0 +1,3 @@
+{
+    "body": "{\"event\": \"authorize\", \"client_key\": \"awgqrvbxb86rz073\", \"from_user_id\": \"8d64dd7f-23e6-4c10-9cfd-847f1a03cd68\", \"content\": {\"scopes\": [\"user_info\", \"basic_bc\", \"basic_bc\", \"tool.image.upload\", \"basic_bc\", \"basic_bc\", \"basic_bc\"]}, \"log_id\": \"20231219222806172018001036211CE6B\", \"event_id\": \"\"}"
+}

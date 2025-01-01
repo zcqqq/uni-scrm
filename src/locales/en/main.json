@@ -1,0 +1,13 @@
+{
+  "menu": {
+    "home": "Home",
+    "marketing": "Marketing",
+    "content": "Content",
+    "strategy": "Strategy",
+    "audience": "Audience",
+    "data": "Data",
+    "customer": "Customer",
+    "group": "Group",
+    "tag": "Tag"
+  }
+}

@@ -13,10 +13,10 @@ Amplify.configure(outputs);
 const client = generateClient<Schema>();
 
 export default function App() {
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+  const [todos, setTodos] = useState<Array<Schema["Channel"]["type"]>>([]);
 
   function listTodos() {
-    client.models.Todo.observeQuery().subscribe({
+    client.models.Channel.observeQuery().subscribe({
       next: (data) => setTodos([...data.items]),
     });
   }
@@ -26,8 +26,8 @@ export default function App() {
   }, []);
 
   function createTodo() {
-    client.models.Todo.create({
-      content: window.prompt("Todo content"),
+    client.models.Channel.create({
+      channel_id: window.prompt("Todo content"),
     });
   }
 
@@ -37,7 +37,7 @@ export default function App() {
       <button onClick={createTodo}>+ new</button>
       <ul>
         {todos.map((todo) => (
-          <li key={todo.id}>{todo.content}</li>
+          <li key={todo.id}>{todo.channel_id}</li>
         ))}
       </ul>
       <div>

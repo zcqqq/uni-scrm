@@ -1,0 +1,13 @@
+{
+  "menu": {
+    "home": "首页",
+    "marketing": "营销",
+    "content": "内容",
+    "strategy": "策略",
+    "audience": "受众",
+    "data": "数据",
+    "customer": "客户",
+    "group": "客户群",
+    "tag": "标签"
+  }
+}

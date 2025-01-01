@@ -1,0 +1,42 @@
+{
+    "version": "2.0",
+    "routeKey": "ANY /weixinWork",
+    "rawPath": "/weixinWork",
+    "rawQueryString": "msg_signature=4bebc6effb9245e5dc02a95903ffba344b18efb3&timestamp=1734096647&nonce=1734265863&echostr=uthZCb9lM5RwokPzqjPG2d8%2B85EGEP40usxhCUYUOIsXL1ifNVxaJNxm88YO1OdInK2EDD0cN8b62RRMWTEeFHDPH%2Fmn%2BZNv1GkOdRFDwzbBwu42%2FMxeUbR72q6hqk7M",
+    "headers": {
+      "accept": "*/*",
+      "content-length": "0",
+      "host": "imh484s1bh.execute-api.us-east-1.amazonaws.com",
+      "pragma": "no-cache",
+      "user-agent": "Mozilla/4.0",
+      "x-amzn-trace-id": "Root=1-675c3708-3089e7ba0824adcf2430b5af",
+      "x-forwarded-for": "14.116.241.251",
+      "x-forwarded-port": "443",
+      "x-forwarded-proto": "https"
+    },
+    "queryStringParameters": {
+      "echostr": "uthZCb9lM5RwokPzqjPG2d8+85EGEP40usxhCUYUOIsXL1ifNVxaJNxm88YO1OdInK2EDD0cN8b62RRMWTEeFHDPH/mn+ZNv1GkOdRFDwzbBwu42/MxeUbR72q6hqk7M",
+      "msg_signature": "4bebc6effb9245e5dc02a95903ffba344b18efb3",
+      "nonce": "1734265863",
+      "timestamp": "1734096647"
+    },
+    "requestContext": {
+      "accountId": "099990170032",
+      "apiId": "imh484s1bh",
+      "domainName": "imh484s1bh.execute-api.us-east-1.amazonaws.com",
+      "domainPrefix": "imh484s1bh",
+      "http": {
+        "method": "GET",
+        "path": "/weixinWork",
+        "protocol": "HTTP/1.1",
+        "sourceIp": "14.116.241.251",
+        "userAgent": "Mozilla/4.0"
+      },
+      "requestId": "Cu2JXgzgIAMEJSA=",
+      "routeKey": "ANY /weixinWork",
+      "stage": "$default",
+      "time": "13/Dec/2024:13:30:48 +0000",
+      "timeEpoch": 1734096648312
+    },
+    "isBase64Encoded": false
+  }
