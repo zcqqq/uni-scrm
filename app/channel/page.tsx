@@ -18,7 +18,7 @@ const { Meta } = Card;
 const Channel: React.FC = () => {
   const [channels, setChannels] = useState<any[]>([]);
 
-  useEffect(() => {    
+  useEffect(() => {
     const getChannels = async () => {
       const data = await backend.fetchChannels();
       setChannels(data);
@@ -35,7 +35,7 @@ const Channel: React.FC = () => {
     `client_key=` + process.env.NEXT_PUBLIC_TIKTOK_CLIENT_KEY +
     `&response_type=code` +
     `&scope=user.info.basic,user.info.profile,user.info.stats,video.list,video.publish,video.upload` +
-    `&redirect_uri=https://imh484s1bh.execute-api.us-east-1.amazonaws.com/tiktok` +
+    `&redirect_uri=` + process.env.NEXT_PUBLIC_CALLBACK + `/tiktok` +
     `&state=0`;
 
   return (
@@ -52,16 +52,16 @@ const Channel: React.FC = () => {
                 <Row gutter={36}>
                   {channels.map((channel) => (
                     <Col span={4} key={channel.id}>
-                      <Card 
-                        bordered={true} 
+                      <Card
+                        bordered={true}
                         cover={
-                          <img 
+                          <img
                             src="/asset/logo/tiktok.png"
                           />
                         }
                         actions={[
-                          <Link 
-                            key="channelTiktok" 
+                          <Link
+                            key="channelTiktok"
                             href={`/channel/tiktok/${channel.id}`}
                           >
                             <SettingOutlined />
@@ -80,12 +80,12 @@ const Channel: React.FC = () => {
               label: i18n.t('channel:tabs.create'),
               children: (
                 <Row gutter={36}>
-                 <Col span={4}>
-                    <Card 
-                      bordered={true} 
+                  <Col span={4}>
+                    <Card
+                      bordered={true}
                       cover={
-                        <img 
-                          src="/asset/logo/tiktok.png" 
+                        <img
+                          src="/asset/logo/tiktok.png"
                         />
                       }
                       actions={[<SettingOutlined key="connectTiktok" onClick={() => window.open(tiktokAuthUrl, '_blank')} />]}
@@ -94,11 +94,11 @@ const Channel: React.FC = () => {
                     </Card>
                   </Col>
                   <Col span={4}>
-                    <Card 
-                      bordered={true} 
+                    <Card
+                      bordered={true}
                       cover={
-                        <img 
-                          src="/asset/logo/douyin.svg" 
+                        <img
+                          src="/asset/logo/douyin.svg"
                         />
                       }
                       actions={[<SettingOutlined key="connectTiktok" onClick={() => window.open(tiktokAuthUrl, '_blank')} />]}
@@ -107,11 +107,11 @@ const Channel: React.FC = () => {
                     </Card>
                   </Col>
                   <Col span={4}>
-                    <Card 
-                      bordered={true} 
+                    <Card
+                      bordered={true}
                       cover={
-                        <img 
-                          src="/asset/logo/weixin.png" 
+                        <img
+                          src="/asset/logo/weixin.png"
                         />
                       }
                       actions={[<SettingOutlined key="connectWeixin" onClick={() => window.open('https://baidu.com', '_blank')}
@@ -121,11 +121,11 @@ const Channel: React.FC = () => {
                     </Card>
                   </Col>
                   <Col span={4}>
-                    <Card 
-                      bordered={true} 
+                    <Card
+                      bordered={true}
                       cover={
-                        <img 
-                          src="/asset/logo/weixinwork.png" 
+                        <img
+                          src="/asset/logo/weixinwork.png"
                         />
                       }
                       actions={[<SettingOutlined key="connectWeixinWork" onClick={() => window.open('https://baidu.com', '_blank')}

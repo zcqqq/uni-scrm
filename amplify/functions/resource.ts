@@ -1,4 +1,5 @@
 import { defineFunction, secret } from '@aws-amplify/backend';
+import { ProcessorMode } from 'aws-cdk-lib/aws-stepfunctions';
 
 export const weixinWork = defineFunction({
   name: 'weixinWork',
@@ -9,10 +10,10 @@ export const tiktok = defineFunction({
   name: 'tiktok',
   entry: './tiktok/index.ts',
   environment: {
+    callback: String(process.env.NEXT_PUBLIC_CALLBACK),
+    tiktok_clientKey: String(process.env.NEXT_PUBLIC_TIKTOK_CLIENT_KEY),
+    tiktok_clientSecret: secret('TIKTOK_CLIENT_SECRET'),
     tiktok_host: "https://open.tiktokapis.com",
-    tiktok_clientKey: "sbawqxclmj4epo0txj",
-    tiktok_clientSecret: "otJCWnI0je36MF4BpxhNhERYV1xRCu7q",
-    tiktok_redirectUri: "https://wcy4p0ps30.execute-api.ap-east-1.amazonaws.com/tiktok"
   }
 });
 

@@ -20,7 +20,7 @@ export default async function authorize(code: String) {
         'client_secret': env.tiktok_clientSecret,
         'code': code,
         'grant_type': 'authorization_code',
-        'redirect_uri': env.tiktok_redirectUri
+        'redirect_uri': env.callback + '/tiktok'
     });
     var config = {
         method: 'post',
@@ -31,6 +31,7 @@ export default async function authorize(code: String) {
         data: data
     };
     try {
+        console.log('config:', config);
         const response = await axios(config);
         console.log(JSON.stringify(response.data));
 
