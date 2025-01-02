@@ -1,4 +1,6 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
+import { weixinWork, tiktok } from "../functions/resource";
+
 
 /*== STEP 1 ===============================================================
 The section below creates a Todo database table with a "content" field. Try
@@ -93,7 +95,7 @@ const schema = a.schema({
     field_name: a.string(),
     field_type: a.string(),
   }),
-}).authorization((allow) => [allow.publicApiKey()]);
+}).authorization((allow) => [allow.publicApiKey(),allow.resource(tiktok),allow.resource(weixinWork)]);
 
 export type Schema = ClientSchema<typeof schema>;
 
