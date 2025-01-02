@@ -1,10 +1,7 @@
 import { generateClient } from 'aws-amplify/data';
 import { type Schema } from '../../../../amplify/data/resource'
 import { env } from '$amplify/env/tiktok';
-import { Amplify } from 'aws-amplify';
-import outputs from '../../../../amplify_outputs.json';
 
-Amplify.configure(outputs);
 export default async function authorize(code: String) {
     const client = generateClient<Schema>();
     
