@@ -11,8 +11,7 @@ import { FileUploader } from '@aws-amplify/ui-react-storage';
 import { uploadData } from 'aws-amplify/storage';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { backend } from './backend';
-import Link from 'next/link'
-
+import Link from 'next/link';
 
 const { Header } = Layout;
 const { Meta } = Card;
@@ -33,7 +32,7 @@ const Channel: React.FC = () => {
   } = theme.useToken();
 
   const tiktokAuthUrl = `https://www.tiktok.com/v2/auth/authorize/?` +
-    `client_key=sbawqxclmj4epo0txj` +
+    `client_key=` + process.env.NEXT_PUBLIC_TIKTOK_CLIENT_KEY +
     `&response_type=code` +
     `&scope=user.info.basic,user.info.profile,user.info.stats,video.list,video.publish,video.upload` +
     `&redirect_uri=https://imh484s1bh.execute-api.us-east-1.amazonaws.com/tiktok` +
