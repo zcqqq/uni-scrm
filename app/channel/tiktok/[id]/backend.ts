@@ -4,7 +4,6 @@ import { AxiosResponse } from 'axios';
 import { channelBackend } from '../../backend';
 
 const client = generateClient<Schema>();
-
 export const tiktokBackend = {
     refreshToken: async (id: string) => {
         const channelData = await channelBackend.getChannel(id as string);

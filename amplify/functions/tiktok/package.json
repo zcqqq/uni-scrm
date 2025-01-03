@@ -1,0 +1,8 @@
+{
+  "name": "tiktok-function",
+  "version": "1.0.0",
+  "dependencies": {
+    "@aws-amplify/backend": "^0.7.0",
+    "aws-amplify": "^6.0.7"
+  }
+} 

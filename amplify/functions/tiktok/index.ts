@@ -1,5 +1,6 @@
 import type { Handler } from 'aws-lambda';
 import authorize from './Login/authorize';
+import refresh_token from './Login/refresh_token';
 import { Amplify } from 'aws-amplify';
 import { getAmplifyDataClientConfig } from '@aws-amplify/backend/function/runtime';
 import { env } from "$amplify/env/tiktok";
@@ -17,7 +18,10 @@ export const handler: Handler = async (event) => {
         const state = event.queryStringParameters.state;
 
         await authorize(code);
-    } if (event.requestContext.http.method === 'POST') {
-        console.log("event:", event);
+    } else if (event.requestContext.http.method === 'POST') {
+        const body = JSON.parse(event.body || '{}');
+        if (body.action === 'refresh_token') {
+            return await refresh_token(body.refresh_token);
+        }
     } 
 }

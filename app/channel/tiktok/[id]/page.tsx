@@ -9,8 +9,9 @@ import { tiktokBackend } from './backend';
 import { channelBackend } from '../../backend';
 import { type Schema } from '@/amplify/data/resource';
 import { useState,useEffect } from 'react';
+import { generateClient } from "aws-amplify/api"
 
-
+const client = generateClient<Schema>()
 const TiktokChannel: React.FC = () => {
     const params = useParams();
     const id = params.id;
