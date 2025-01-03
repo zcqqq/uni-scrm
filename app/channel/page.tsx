@@ -10,7 +10,7 @@ import { generateClient } from 'aws-amplify/data';
 import { FileUploader } from '@aws-amplify/ui-react-storage';
 import { uploadData } from 'aws-amplify/storage';
 import { getCurrentUser } from 'aws-amplify/auth';
-import { backend } from './backend';
+import { channelBackend } from './backend';
 import Link from 'next/link';
 
 const { Header } = Layout;
@@ -20,7 +20,7 @@ const Channel: React.FC = () => {
 
   useEffect(() => {
     const getChannels = async () => {
-      const data = await backend.fetchChannels();
+      const data = await channelBackend.fetchChannels();
       setChannels(data);
     };
 
