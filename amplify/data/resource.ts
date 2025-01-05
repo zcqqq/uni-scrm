@@ -1,5 +1,6 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
 import { weixinWork, tiktok } from "../functions/resource";
+import { postConfirmation } from "../auth/post-confirmation/resource";
 
 
 /*== STEP 1 ===============================================================
@@ -22,8 +23,17 @@ const schema = a.schema({
     quota_video_generation: a.integer(),
     left_video_generation: a.integer(),
   }),
+  User: a.model({
+    is_deleted: a.boolean().default(false),
+    owner: a.string(),
+    group: a.string(),
+    tenant_id: a.string(),
+    email: a.string(),
+  }).authorization(allow => [allow.ownerDefinedIn("owner"), allow.groupDefinedIn('group')]),
   Channel: a.model({
     is_deleted: a.boolean().default(false),
+    owner: a.string(),
+    group: a.string(),
     tenant_id: a.string(),
     channel_type: a.string(),
     channel_id: a.string(), //来自渠道的原始id
@@ -95,7 +105,8 @@ const schema = a.schema({
     field_name: a.string(),
     field_type: a.string(),
   }),
-}).authorization((allow) => [allow.publicApiKey(),allow.resource(tiktok),allow.resource(weixinWork)]);
+}).authorization(allow => [allow.publicApiKey(),
+allow.resource(tiktok), allow.resource(weixinWork), allow.resource(postConfirmation)]);
 
 export type Schema = ClientSchema<typeof schema>;
 
@@ -114,7 +125,7 @@ Go to your frontend source code. From your client-side code, generate a
 Data client to make CRUDL requests to your table. (THIS SNIPPET WILL ONLY
 WORK IN THE FRONTEND CODE FILE.)
 
-Using JavaScript or Next.js React Server Components, Middleware, Server 
+Using JavaScript or Next.js React Server Components, Middleware, Server
 Actions or Pages Router? Review how to generate Data clients for those use
 cases: https://docs.amplify.aws/gen2/build-a-backend/data/connect-to-API/
 =========================================================================*/

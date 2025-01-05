@@ -2,8 +2,14 @@
 import { revalidatePath } from "next/cache";
 import { AuthGetCurrentUserServer, cookiesClient } from "@/utils/amplify-utils";
 import Logout from "@/components/Logout";
+import { fetchAuthSession } from 'aws-amplify/auth';
+
 
 async function App() {
+  const session = await fetchAuthSession();
+  const groups = session.tokens?.accessToken.payload['cognito:groups'] || [];
+  console.log('User groups:', groups);
+
   const user = await AuthGetCurrentUserServer();
   const { data: todos } = await cookiesClient.models.Channel.list();
 
