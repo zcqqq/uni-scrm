@@ -9,6 +9,7 @@ import { AxiosResponse } from 'axios';
 import type { CarouselProps, RadioChangeEvent } from 'antd';
 import { Carousel } from 'antd';
 import { StorageImage } from '@aws-amplify/ui-react-storage';
+import { uploadFileToS3 } from './backend';
 
 
 const client = generateClient<Schema>();
@@ -172,11 +173,9 @@ const App: React.FC = () => {
                                     type="primary"
                                     htmlType="submit"
                                     onClick={() => {
-                                        if (!file) return;
-                                        uploadData({
-                                            path: `public/${file.name}`,
-                                            data: file,
-                                        })
+                                        if (file) {
+                                            uploadFileToS3(file);
+                                        }
                                     }}
                                 >
                                     存入S3
