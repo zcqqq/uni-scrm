@@ -10,6 +10,9 @@ import type { CarouselProps, RadioChangeEvent } from 'antd';
 import { Carousel } from 'antd';
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { uploadFileToS3 } from './backend';
+import { fetchAuthSession } from 'aws-amplify/auth';
+import { FileUploader } from '@aws-amplify/ui-react-storage';
+import { Authenticator } from '@aws-amplify/ui-react';
 
 
 const client = generateClient<Schema>();
@@ -90,6 +93,21 @@ const uploadVideo = async () => {
 };
 
 const App: React.FC = () => {
+    const [identityId, setIdentityId] = useState<string>('');
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const getSession = async () => {
+            try {
+                const session = await fetchAuthSession();
+                setIdentityId(session.identityId || '');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        getSession();
+    }, []);
+
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -131,7 +149,9 @@ const App: React.FC = () => {
     const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) =>
         setFileList(newFileList);
 
+    
     return (
+        <Authenticator>
         <Layout hasSider>
             <Layout style={{ marginLeft: 200 }}>
                 <Header style={{ padding: 0, background: colorBgContainer }} >
@@ -167,6 +187,12 @@ const App: React.FC = () => {
                                 <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
                                     <img alt="example" style={{ width: '100%' }} src={previewImage} />
                                 </Modal>
+                                <FileUploader
+  acceptedFileTypes={['image/*']}
+  path={({ identityId }) => `public/${identityId}/`}
+  maxFileCount={1}
+  isResumable
+/>
                             </Form.Item>
                             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                                 <Button
@@ -194,7 +220,11 @@ const App: React.FC = () => {
                     <Sider width="25%">
                         <Carousel dotPosition='right'>
                             <div>
-                                <StorageImage alt="rocket" path="public/rocket.jpg" />;
+                                {!isLoading && identityId && (
+                                    <StorageImage
+                                        alt="rocket"
+                                        path={({ identityId }) => `public/${identityId}/rocket.jpg`}
+                                    />)}
                             </div>
                             <div>
                                 <h3>2</h3>
@@ -204,6 +234,7 @@ const App: React.FC = () => {
                 </Layout>
             </Layout>
         </Layout>
+        </Authenticator>
     );
 };
 

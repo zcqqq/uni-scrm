@@ -6,15 +6,13 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 export const uploadFileToS3 = async (file: File) => {
 
 const session = await fetchAuthSession();
-const groups = session.tokens?.accessToken.payload['cognito:groups'] || [];
-
-console.log('User groups:', groups);
+const identityId = session.identityId;
     const client = generateClient<Schema>();
     if (!file) return;
     
     try {
         const result = await uploadData({
-            path: `public/${file.name}`,
+            path: `public/${identityId}/${file.name}`,
             data: file,
         });
 
