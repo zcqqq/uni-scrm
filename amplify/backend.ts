@@ -47,20 +47,16 @@ const lambdaIntegration = new LambdaIntegration(
 );
 
 // create a new resource path with IAM authorization
-const itemsPath = myRestApi.root.addResource("items", {
+const contentPath = myRestApi.root.addResource("content", {
   defaultMethodOptions: {
     authorizationType: AuthorizationType.IAM,
   },
 });
-
 // add methods you would like to create to the resource path
-itemsPath.addMethod("GET", lambdaIntegration);
-itemsPath.addMethod("POST", lambdaIntegration);
-itemsPath.addMethod("DELETE", lambdaIntegration);
-itemsPath.addMethod("PUT", lambdaIntegration);
-
+contentPath.addMethod("GET", lambdaIntegration);
+contentPath.addMethod("POST", lambdaIntegration);
 // add a proxy resource path to the API
-itemsPath.addProxy({
+contentPath.addProxy({
   anyMethod: true,
   defaultIntegration: lambdaIntegration,
 });
@@ -69,7 +65,6 @@ itemsPath.addProxy({
 const cognitoAuth = new CognitoUserPoolsAuthorizer(apiStack, "CognitoAuth", {
   cognitoUserPools: [backend.auth.resources.userPool],
 });
-
 // create a new resource path with Cognito authorization
 const booksPath = myRestApi.root.addResource("cognito-auth-path");
 booksPath.addMethod("GET", lambdaIntegration, {
@@ -83,8 +78,8 @@ const apiRestPolicy = new Policy(apiStack, "RestApiPolicy", {
     new PolicyStatement({
       actions: ["execute-api:Invoke"],
       resources: [
-        `${myRestApi.arnForExecuteApi("*", "/items", "dev")}`,
-        `${myRestApi.arnForExecuteApi("*", "/items/*", "dev")}`,
+        `${myRestApi.arnForExecuteApi("*", "/content", "dev")}`,
+        `${myRestApi.arnForExecuteApi("*", "/content/*", "dev")}`,
         `${myRestApi.arnForExecuteApi("*", "/cognito-auth-path", "dev")}`,
       ],
     }),
