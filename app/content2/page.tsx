@@ -8,6 +8,23 @@ import React, { useState, useEffect } from 'react';
 import type { CarouselProps, RadioChangeEvent } from 'antd';
 import { Carousel, Radio } from 'antd';
 import { list, ListPaginateWithPathOutput } from 'aws-amplify/storage';
+import { get } from 'aws-amplify/api';
+
+async function getItem(): Promise<string | undefined> {
+    try {
+        const restOperation = await get({ 
+            apiName: 'myRestApi',
+            path: 'items' 
+        });
+        const response = await restOperation.response;
+        const text = await response.body.text();
+        console.log('GET call succeeded: ', text);
+        return text;
+    } catch (error: any) {
+        console.log('GET call failed: ', error);
+        return undefined;
+    }
+}
 
 const AmplifyCarousel = () => {
     const [images, setImages] = useState<ListPaginateWithPathOutput>();
@@ -39,18 +56,28 @@ const AmplifyCarousel = () => {
 };
 
 const Content2: React.FC = () => {
+    const [itemData, setItemData] = useState<string | undefined>(undefined);
+
+    useEffect(() => {
+        getItem().then(result => setItemData(result));
+    }, []);
+
     return (
         <Authenticator>
-
-            <FileUploader
-                acceptedFileTypes={['image/*']}
-                path={({ identityId }) => `private/${identityId}/`}
-                maxFileCount={1}
-                isResumable
-            />
-            <Authenticator>
-                <AmplifyCarousel />
-            </Authenticator>
+            {({ signOut, user }) => (
+                <>
+                    <div>{itemData || 'Loading...'}</div>
+                    <FileUploader
+                        acceptedFileTypes={['image/*']}
+                        path={({ identityId }) => `private/${identityId}/`}
+                        maxFileCount={1}
+                        isResumable
+                    />
+                    <Authenticator>
+                        <AmplifyCarousel />
+                    </Authenticator>
+                </>
+            )}
         </Authenticator>
     );
 };
