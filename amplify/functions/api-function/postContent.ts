@@ -1,45 +1,69 @@
-import { APIGatewayProxyEvent } from "aws-lambda";
-import { generateClient } from 'aws-amplify/data';
-import { type Schema } from '../../../amplify/data/resource'
-import Replicate from "replicate";
-import { writeFile } from "node:fs/promises";
+// Only import types for compile-time checking
+import type { APIGatewayProxyEvent } from "aws-lambda";
+import type { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
-//body: {
-//    content_type: "IMAGE",
-//}
-
+// Move heavy imports inside the handler
 export const postContent = async (event: APIGatewayProxyEvent) => {
-    const client = generateClient<Schema>();
-    console.log("event", event);
-
+    // Lazy load heavy dependencies only when needed
+    const { S3Client, PutObjectCommand } = await import('@aws-sdk/client-s3');
+    const fetch = (await import('node-fetch')).default;
+    
     if (!event.body) {
         return {
             statusCode: 400,
-            body: JSON.stringify({ error: "Missing request body" })
+            body: JSON.stringify({ error: "Missing request body" }),
         };
     }
+
+    // Initialize clients only when needed
+    const s3Client = new S3Client({ 
+        region: 'ap-east-1',
+        maxAttempts: 3  // Add retry strategy
+    });
+
     const body = JSON.parse(event.body);
 
-
-    const content = {
-        content_type: body.content_type,
+    const replicateOutput = {
+        output: [
+            "https://replicate.delivery/xezq/Jy1MmEkOetzSVqiSvndY1uLNKUfR7Wz9iOjifSJNefROQIdgC/out-0.webp"
+        ]
     };
-    const { data: createdContent, errors } = await client.models.Content.create(content);
-    console.log('createdContent: ' + createdContent);
-    
-    if (!createdContent) {
+
+    // Grab the image URL
+    const imageUrl = replicateOutput.output[0];
+
+    try {
+        // Download the image
+        const response = await fetch(imageUrl);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch image: ${response.statusText}`);
+        }
+        const imageBuffer = Buffer.from(await response.arrayBuffer());
+
+        // Upload to S3
+        await s3Client.send(new PutObjectCommand({
+            Bucket: 'amplify-awsamplifygen2-zc-amplifyteamdrivebucket28-ldqvkzlfhunp',
+            Key: "private/1.webp",
+            Body: imageBuffer,
+            ContentType: "image/webp",
+        }));
+
+        return {
+            statusCode: 200,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "*",
+            },
+            body: JSON.stringify({ success: true }),
+        };
+    } catch (error) {
+        console.error('Error:', error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: "Failed to create content" })
+            body: JSON.stringify({ error: 'Internal Server Error' }),
         };
+    } finally {
+        // Cleanup
+        s3Client.destroy();
     }
-
-    return {
-        statusCode: 200,
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "*",
-        },
-        body: JSON.stringify({ id: createdContent.id }),
-    };
 };

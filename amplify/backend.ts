@@ -18,10 +18,18 @@ import { myApiFunction } from "./functions/api-function/resource";
 const backend = defineBackend({
   auth,
   data,
-  storage,
+  //storage,
   myApiFunction,
   weixinWork,
   tiktok,
+});
+
+
+backend.addOutput({
+  storage: {
+    aws_region: "ap-east-1",
+    bucket_name: "file.uni-scrm.com"
+  },
 });
 
 // create a new API stack
