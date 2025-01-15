@@ -6,15 +6,15 @@ import '@aws-amplify/ui-react/styles.css';
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import React, { useState, useEffect } from 'react';
 import type { CarouselProps, RadioChangeEvent } from 'antd';
-import { Carousel, Radio } from 'antd';
+import { Carousel, Radio, Button } from 'antd';
 import { list, ListPaginateWithPathOutput } from 'aws-amplify/storage';
 import { get } from 'aws-amplify/api';
 
 async function getItem(): Promise<string | undefined> {
     try {
-        const restOperation = await get({ 
+        const restOperation = await get({
             apiName: 'myRestApi',
-            path: 'items' 
+            path: 'content'
         });
         const response = await restOperation.response;
         const text = await response.body.text();
@@ -32,7 +32,7 @@ const AmplifyCarousel = () => {
     useEffect(() => {
         const fetchImages = async () => {
             const result = await list({
-                path: ({ identityId }) => `private/${identityId}/`
+                path: ({ identityId }) => `private/`
             });
             console.log(result);
             setImages(result);

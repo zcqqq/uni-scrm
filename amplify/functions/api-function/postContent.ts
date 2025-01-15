@@ -42,7 +42,7 @@ export const postContent = async (event: APIGatewayProxyEvent) => {
 
         // Upload to S3
         await s3Client.send(new PutObjectCommand({
-            Bucket: 'amplify-awsamplifygen2-zc-amplifyteamdrivebucket28-ldqvkzlfhunp',
+            Bucket: 'file.uni-scrm.com',
             Key: "private/1.webp",
             Body: imageBuffer,
             ContentType: "image/webp",
