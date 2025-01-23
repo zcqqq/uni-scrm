@@ -1,32 +1,23 @@
-import { uploadData } from 'aws-amplify/storage';
-import { generateClient } from 'aws-amplify/data';
-import { type Schema } from '../../amplify/data/resource'
-import { fetchAuthSession } from 'aws-amplify/auth';
+import { post } from 'aws-amplify/api';
 
-export const uploadFileToS3 = async (file: File) => {
+export async function postContent(prompt:string) {
+  try {
+    const restOperation = post({
+      apiName: 'myRestApi',
+      path: 'content',
+      options: {
+        body: {
+          message: prompt
+        }
+      }
+    });
 
-const session = await fetchAuthSession();
-const identityId = session.identityId;
-    const client = generateClient<Schema>();
-    if (!file) return;
-    
-    try {
-        const result = await uploadData({
-            path: `public/${identityId}/${file.name}`,
-            data: file,
-        });
+    const { body } = await restOperation.response;
+    const response = await body.json();
 
-        //create Content in database
-        const content = {
-            content_type: 'image',
-            content_content: file.name,
-        };
-        const { data: createdContent, errors } = await client.models.Content.create(content, { authMode: 'userPool'});
-        console.log('createdContent:', createdContent);
-
-        return result;
-    } catch (error) {
-        console.error('Error uploading file:', error);
-        throw error;
-    }
-};
+    console.log('POST call succeeded');
+    console.log(response);
+  } catch (error: any) {
+    console.log('POST call failed: ', JSON.parse(error.response.body));
+  }
+}

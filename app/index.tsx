@@ -7,10 +7,6 @@ import type { MenuProps } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import { HomeOutlined, UserOutlined, TeamOutlined, TagOutlined, ReadOutlined, CommentOutlined, SubnodeOutlined, SettingOutlined } from '@ant-design/icons';
 import i18next from './i18n';
-import { Amplify } from "aws-amplify";
-import outputs from "@/amplify_outputs.json";
-
-Amplify.configure(outputs);
 
 const Index: React.FC = () => {
   type MenuItem = Required<MenuProps>['items'][number];
@@ -61,9 +57,8 @@ const Index: React.FC = () => {
   };
 
   return (
-    <Sider style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0 }}>
+    <Sider>
       <Menu
-        style={{ height: '100%', borderRight: 0, width: '100%' }}
         onClick={onClick}
         defaultSelectedKeys={['1']}
         defaultOpenKeys={['sub1']}

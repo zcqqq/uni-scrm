@@ -1,6 +1,7 @@
 import type { APIGatewayProxyHandler } from "aws-lambda";
 import { postContent } from "./postContent";
 import { getContent } from "./getContent";
+import { postChannelContent } from "./postChannelContent";
 import { Amplify } from 'aws-amplify';
 import { getAmplifyDataClientConfig } from '@aws-amplify/backend/function/runtime';
 import { env } from "$amplify/env/api-function";
@@ -16,6 +17,9 @@ export const handler: APIGatewayProxyHandler = async (event) => {
   } 
   else if(event.httpMethod === "GET" && event.path === "/content") {
     return getContent(event);
+  }
+  else if(event.httpMethod === "POST" && event.path === "/channel") {
+    return postChannelContent(event);
   }
   else {
   return {

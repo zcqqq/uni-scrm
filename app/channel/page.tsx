@@ -27,10 +27,6 @@ const Channel: React.FC = () => {
     getChannels();
   }, []);
 
-  const {
-    token: { colorBgContainer, borderRadiusLG },
-  } = theme.useToken();
-
   const tiktokAuthUrl = `https://www.tiktok.com/v2/auth/authorize/?` +
     `client_key=` + process.env.NEXT_PUBLIC_TIKTOK_CLIENT_KEY +
     `&response_type=code` +
@@ -42,7 +38,6 @@ const Channel: React.FC = () => {
     <Layout hasSider>
       <Index />
       <Layout style={{ marginLeft: 200 }}>
-        <Header style={{ padding: 0, background: colorBgContainer }} />
         <Tabs
           items={[
             {

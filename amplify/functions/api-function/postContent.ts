@@ -1,17 +1,24 @@
 // Only import types for compile-time checking
-import type { APIGatewayProxyEvent } from "aws-lambda";
+import type { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import type { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { generateClient } from 'aws-amplify/data';
+import { type Schema } from '../../../amplify/data/resource'
 
 // Move heavy imports inside the handler
-export const postContent = async (event: APIGatewayProxyEvent) => {
+export const postContent = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     // Lazy load heavy dependencies only when needed
     const { S3Client, PutObjectCommand } = await import('@aws-sdk/client-s3');
     const fetch = (await import('node-fetch')).default;
-    
+    const client = generateClient<Schema>();
+
     if (!event.body) {
         return {
             statusCode: 400,
             body: JSON.stringify({ error: "Missing request body" }),
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "*",
+            }
         };
     }
 
@@ -22,6 +29,7 @@ export const postContent = async (event: APIGatewayProxyEvent) => {
     });
 
     const body = JSON.parse(event.body);
+    const prompt = body.prompt;
 
     const replicateOutput = {
         output: [
@@ -41,12 +49,35 @@ export const postContent = async (event: APIGatewayProxyEvent) => {
         const imageBuffer = Buffer.from(await response.arrayBuffer());
 
         // Upload to S3
+        const s3Key = `public/${prompt}.webp`;
+        
+        // First upload the file
         await s3Client.send(new PutObjectCommand({
             Bucket: 'file.uni-scrm.com',
-            Key: "private/1.webp",
+            Key: s3Key,
             Body: imageBuffer,
             ContentType: "image/webp",
         }));
+
+        const content = {
+            content_type: 'IMAGE',
+            content_content: s3Key
+        };
+        const { data: createdContent, errors } = await client.models.Content.create(content);
+        console.log('createdContent: ' + createdContent);
+
+        // After getting the content_id, update the S3 object with metadata
+        if (createdContent?.id) {
+            await s3Client.send(new PutObjectCommand({
+                Bucket: 'file.uni-scrm.com',
+                Key: s3Key,
+                Body: imageBuffer,
+                ContentType: "image/webp",
+                Metadata: {
+                    content_id: createdContent.id
+                },
+            }));
+        }        
 
         return {
             statusCode: 200,

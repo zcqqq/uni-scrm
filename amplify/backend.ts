@@ -69,6 +69,16 @@ contentPath.addProxy({
   defaultIntegration: lambdaIntegration,
 });
 
+// Add channel content endpoint with path parameter
+const channelPath = myRestApi.root.addResource("channel");
+const channelIdPath = channelPath.addResource("{channelId}");
+const channelContentPath = channelIdPath.addResource("content", {
+  defaultMethodOptions: {
+    authorizationType: AuthorizationType.IAM,
+  },
+});
+channelContentPath.addMethod("POST", lambdaIntegration);
+
 // create a new Cognito User Pools authorizer
 const cognitoAuth = new CognitoUserPoolsAuthorizer(apiStack, "CognitoAuth", {
   cognitoUserPools: [backend.auth.resources.userPool],
@@ -88,6 +98,7 @@ const apiRestPolicy = new Policy(apiStack, "RestApiPolicy", {
       resources: [
         `${myRestApi.arnForExecuteApi("*", "/content", "dev")}`,
         `${myRestApi.arnForExecuteApi("*", "/content/*", "dev")}`,
+        `${myRestApi.arnForExecuteApi("*", "/channel/*/content", "dev")}`,
         `${myRestApi.arnForExecuteApi("*", "/cognito-auth-path", "dev")}`,
       ],
     }),
