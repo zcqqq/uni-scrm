@@ -25,7 +25,11 @@ const Index: React.FC = () => {
   const items: MenuProps['items'] = [
     getItem(i18next.t('menu.home'), '/channel', <HomeOutlined />),
     getItem(i18next.t('menu.marketing'), '/marketing', null, [
-      getItem(i18next.t('menu.content'), '/content', <ReadOutlined/>),
+      getItem(i18next.t('menu.content'), '/content', <ReadOutlined/>, [
+        getItem(i18next.t('menu.content.image'), '/content/image', null),
+        getItem(i18next.t('menu.content.text'), '/content/text', null),
+        getItem(i18next.t('menu.content.video'), '/content/video', null)
+      ]),
       getItem(i18next.t('menu.strategy'), '/strategy', <SubnodeOutlined/>),
       getItem(i18next.t('menu.audience'), '/audience', <CommentOutlined/>)
     ], 'group'),
@@ -51,17 +55,40 @@ const Index: React.FC = () => {
   }, []);
 
   const [current, setCurrent] = useState('');
+  const [openKeys, setOpenKeys] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Get current path from window location
+    const path = window.location.pathname;
+    setCurrent(path);
+
+    // Split path into segments and build parent paths
+    const pathSegments = path.split('/').filter(Boolean);
+    const parentKeys = pathSegments.reduce((acc: string[], curr: string, index: number) => {
+      const parentPath = '/' + pathSegments.slice(0, index + 1).join('/');
+      acc.push(parentPath);
+      return acc;
+    }, []);
+    
+    // Remove the last key (current page) to get parent menu keys
+    setOpenKeys(parentKeys.slice(0, -1));
+  }, []);
 
   const onClick: MenuProps['onClick'] = (e) => {
     setCurrent(e.key);
+  };
+
+  const onOpenChange: MenuProps['onOpenChange'] = (keys) => {
+    setOpenKeys(keys);
   };
 
   return (
     <Sider>
       <Menu
         onClick={onClick}
-        defaultSelectedKeys={['1']}
-        defaultOpenKeys={['sub1']}
+        selectedKeys={[current]}
+        openKeys={openKeys}
+        onOpenChange={onOpenChange}
         mode='inline'
         items={items}
       />

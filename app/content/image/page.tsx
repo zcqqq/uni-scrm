@@ -9,10 +9,10 @@ import type { CarouselProps, RadioChangeEvent } from 'antd';
 import { Carousel, Radio, Button, Input, Image } from 'antd';
 import { list, ListPaginateWithPathOutput } from 'aws-amplify/storage';
 import { get } from 'aws-amplify/api';
-import { postContent } from './image/backend';
+import { postContent } from './backend';
 import { Layout } from 'antd';
 const { Header, Content } = Layout;
-import Index from '../index';
+import Index from '../../index';
 import styles from './page.module.css';
 
 async function getItem(): Promise<string | undefined> {
