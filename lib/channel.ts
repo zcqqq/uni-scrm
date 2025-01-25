@@ -4,7 +4,7 @@ import { type Schema } from '@/amplify/data/resource';
 const client = generateClient<Schema>();
 
 export const channelBackend = {
-    fetchChannels: async () => {
+    listChannels: async () => {
         const { data } = await client.models.Channel.list({
             filter: { is_deleted: { eq: false } }
         });

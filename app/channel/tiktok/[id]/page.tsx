@@ -6,7 +6,7 @@ import React from 'react';
 import { useParams } from 'next/navigation';
 import Index from '../../../index';
 import { tiktokBackend } from './backend';
-import { channelBackend } from '../../backend';
+import { channelBackend } from '../../../../lib/channel';
 import { type Schema } from '@/amplify/data/resource';
 import { useState,useEffect } from 'react';
 import { generateClient } from "aws-amplify/api"

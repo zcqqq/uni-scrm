@@ -37,6 +37,9 @@ const schema = a.schema({
     refresh_token: a.string(),
     client_token: a.string(),
     client_expires_in: a.integer(),
+
+    max_video_post_duration_sec: a.integer(), //TIKTOK
+    privacy_level_options: a.string().array(), //TIKTOK
   }),
   Content: a.model({
     tenant_id: a.string(),

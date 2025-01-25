@@ -1,7 +1,7 @@
 import { generateClient } from 'aws-amplify/data';
 import { type Schema } from '@/amplify/data/resource';
 import { AxiosResponse } from 'axios';
-import { channelBackend } from '../../backend';
+import { channelBackend } from '../../../../lib/channel';
 
 const client = generateClient<Schema>();
 export const tiktokBackend = {
