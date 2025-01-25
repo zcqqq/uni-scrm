@@ -1,0 +1,20 @@
+{
+    "File": {
+        "Image": "图片",
+        "Text": "文本",
+        "Video": "视频",
+        "Width": "宽",
+        "Height": "高"
+    },
+    "Model": {
+        "Model": "模型",
+        "Prompt": "提示词",
+        "Generate": "生成",
+        "Re-Generate":"重新生成",
+        "black-forest-labs/flux-schnell": "Flux Schnell",
+        "tencent/hunyuan-video": "腾讯混元"
+    },
+    "Current": "当前",
+    "HistoryList": "历史列表",
+    "Publish": "发布"
+}

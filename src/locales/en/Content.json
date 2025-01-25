@@ -1,0 +1,20 @@
+{
+    "File": {
+        "Image": "Image",
+        "Text": "Text",
+        "Video": "Video",
+        "Width": "Width",
+        "Height": "Height"
+    },
+    "Model": {
+        "Model": "Model",
+        "Prompt": "Prompt",
+        "Generate": "Generate",
+        "Re-Generate": "Re-Generate",
+        "black-forest-labs/flux-schnell": "Flux Schnell",
+        "tencent/hunyuan-video": "Tencent Hunyuan"
+    },
+    "Current": "Current",
+    "HistoryList": "History List",
+    "Publish": "Publish"
+}

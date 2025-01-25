@@ -8,7 +8,7 @@ import { Player } from 'video-react';
 import 'video-react/dist/video-react.css';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import Index from '../../index';
-import { videoBackend } from '../../../lib/content';
+import { contentBackend } from '../../../lib/content';
 import { channelBackend } from '../../../lib/channel';
 
 const { Header, Content } = Layout;
@@ -49,7 +49,7 @@ const ContentVideo: React.FC = () => {
 
     const [form] = Form.useForm();
     const handleSubmit = (values: any) => {
-        videoBackend.postContentVideo(values);
+        contentBackend.postContentVideo(values);
         setIsSubmitted(true);
     };
 

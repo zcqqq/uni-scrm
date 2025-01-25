@@ -1,14 +1,14 @@
 {
-  "tiktok": {
+  "TIKTOK": {
     "channelType": "TikTok"
   },
-  "douyin": {
+  "DOUYIN": {
     "channelType": "Douyin Enterprise Account"
   },
-  "weixin": {
+  "WEIXIN": {
     "channelType": "WeChat Official Account"
   },
-  "weixinwork": {
+  "WEIXINWORK": {
     "channelType": "WeCom"
   }
 }

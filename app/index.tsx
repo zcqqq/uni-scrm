@@ -23,20 +23,20 @@ const Index: React.FC = () => {
   }
 
   const items: MenuProps['items'] = [
-    getItem(i18next.t('menu.home'), '/channel', <HomeOutlined />),
-    getItem(i18next.t('menu.marketing'), '/marketing', null, [
-      getItem(i18next.t('menu.content'), '/content', <ReadOutlined/>, [
-        getItem(i18next.t('menu.content.image'), '/content/image', null),
-        getItem(i18next.t('menu.content.text'), '/content/text', null),
-        getItem(i18next.t('menu.content.video'), '/content/video', null)
+    getItem(i18next.t('Menu.Home'), '/channel', <HomeOutlined />),
+    getItem(i18next.t('Menu.Marketing'), '/marketing', null, [
+      getItem(i18next.t('Menu.Content'), '/content', <ReadOutlined/>, [
+        getItem(i18next.t('Menu.Content.Image'), '/content/image', null),
+        getItem(i18next.t('Menu.Content.Text'), '/content/text', null),
+        getItem(i18next.t('Menu.Content.Video'), '/content/video', null)
       ]),
-      getItem(i18next.t('menu.strategy'), '/strategy', <SubnodeOutlined/>),
-      getItem(i18next.t('menu.audience'), '/audience', <CommentOutlined/>)
+      getItem(i18next.t('Menu.Strategy'), '/strategy', <SubnodeOutlined/>),
+      getItem(i18next.t('Menu.Audience'), '/audience', <CommentOutlined/>)
     ], 'group'),
-    getItem(i18next.t('menu.data'), '/data', null, [
-      getItem(i18next.t('menu.customer'), '/customer', <UserOutlined/>),
-      getItem(i18next.t('menu.group'), '/group', <TeamOutlined/>),
-      getItem(i18next.t('menu.tag'), '/tag', <TagOutlined/>)
+    getItem(i18next.t('Menu.Data'), '/data', null, [
+      getItem(i18next.t('Menu.Customer'), '/customer', <UserOutlined/>),
+      getItem(i18next.t('Menu.Group'), '/group', <TeamOutlined/>),
+      getItem(i18next.t('Menu.Tag'), '/tag', <TagOutlined/>)
     ], 'group'),
   ];
 

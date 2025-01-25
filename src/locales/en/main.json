@@ -1,16 +1,16 @@
 {
-  "menu": {
-    "home": "Home",
-    "marketing": "Marketing",
-    "content": "Content",
-    "content.image": "Image",
-    "content.text": "Text",
-    "content.video": "Video",
-    "strategy": "Strategy",
-    "audience": "Audience",
-    "data": "Data",
-    "customer": "Customer",
-    "group": "Group",
-    "tag": "Tag"
+  "Menu": {
+    "Home": "Home",
+    "Marketing": "Marketing",
+    "Content": "Content",
+    "Content.Image": "Image",
+    "Content.Text": "Text",
+    "Content.Video": "Video",
+    "Strategy": "Strategy",
+    "Audience": "Audience",
+    "Data": "Data",
+    "Customer": "Customer",
+    "Group": "Group",
+    "Tag": "Tag"
   }
 }
