@@ -1,13 +1,13 @@
 import i18next from 'i18next';
 import enMain from '../src/locales/en/main.json';
-import enChannel from '../src/locales/en/Channel.json';
-import enContent from '../src/locales/en/Content.json';
-import enSetting from '../src/locales/en/Setting.json';
-import enFallback from '../src/locales/en/Fallback.json';
+import enChannel from '../src/locales/en/channel.json';
+import enContent from '../src/locales/en/content.json';
+import enSetting from '../src/locales/en/setting.json';
+import enFallback from '../src/locales/en/fallback.json';
 import cnMain from '../src/locales/cn/main.json';
-import cnChannel from '../src/locales/cn/Channel.json';
-import cnContent from '../src/locales/cn/Content.json';
-import cnSetting from '../src/locales/cn/Setting.json';
+import cnChannel from '../src/locales/cn/channel.json';
+import cnContent from '../src/locales/cn/content.json';
+import cnSetting from '../src/locales/cn/Ssetting.json';
 
 export const defaultNS = 'Main';
 export const fallbackNS = 'Fallback';
