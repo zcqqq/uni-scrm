@@ -7,7 +7,7 @@ import enFallback from '../src/locales/en/fallback.json';
 import cnMain from '../src/locales/cn/main.json';
 import cnChannel from '../src/locales/cn/channel.json';
 import cnContent from '../src/locales/cn/content.json';
-import cnSetting from '../src/locales/cn/Ssetting.json';
+import cnSetting from '../src/locales/cn/setting.json';
 
 export const defaultNS = 'Main';
 export const fallbackNS = 'Fallback';
