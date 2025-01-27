@@ -3,16 +3,29 @@ import { generateClient } from 'aws-amplify/data';
 import { type Schema } from '@/amplify/data/resource';
 
 const client = generateClient<Schema>();
+interface ImageGenerationParams {
+  prompt: string;
+  quality?: string;
+  style?: string;
+  size?: string;
+}
+interface VideoGenerationParams {
+  prompt: string;
+  quality?: string;
+  style?: string;
+  size?: string;
+}
 
 export const contentBackend = {
-  postContentImage: async (prompt: string) => {
+  postContentImage: async (values: any) => {
+    console.log('values', values);
     try {
       const restOperation = post({
         apiName: 'myRestApi',
         path: 'content',
         options: {
           body: {
-            message: prompt
+            message: "test",
           }
         }
       });
@@ -26,14 +39,14 @@ export const contentBackend = {
       console.log('POST call failed: ', JSON.parse(error.response.body));
     }
   },
-  postContentVideo: async (prompt: string) => {
+  postContentVideo: async (params: VideoGenerationParams) => {
     try {
       const restOperation = post({
         apiName: 'myRestApi',
         path: 'content',
         options: {
           body: {
-            message: prompt
+            message: params.prompt,
           }
         }
       });

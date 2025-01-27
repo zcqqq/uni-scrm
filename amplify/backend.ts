@@ -1,6 +1,7 @@
 import { defineBackend } from '@aws-amplify/backend';
 import { auth } from './auth/resource';
 import { data } from './data/resource';
+import { replicate } from './functions/resource';
 import { weixinWork } from './functions/resource';
 import { tiktok } from './functions/resource';
 import { storage } from './storage/resource';
@@ -20,6 +21,7 @@ const backend = defineBackend({
   data,
   //storage,
   myApiFunction,
+  replicate,
   weixinWork,
   tiktok,
 });

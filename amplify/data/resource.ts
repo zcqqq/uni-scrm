@@ -1,5 +1,5 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
-import { weixinWork, tiktok } from "../functions/resource";
+import { weixinWork, tiktok,replicate } from "../functions/resource";
 import { postConfirmation } from "../auth/post-confirmation/resource";
 import { myApiFunction } from "../functions/api-function/resource";
 
@@ -99,7 +99,7 @@ const schema = a.schema({
     field_name: a.string(),
     field_type: a.string(),
   }),
-}).authorization(allow => [allow.publicApiKey(),allow.resource(myApiFunction),
+}).authorization(allow => [allow.publicApiKey(),allow.resource(myApiFunction),allow.resource(replicate),
 allow.resource(tiktok), allow.resource(weixinWork), allow.resource(postConfirmation)]);
 
 export type Schema = ClientSchema<typeof schema>;

@@ -1,5 +1,9 @@
 import { defineFunction, secret } from '@aws-amplify/backend';
-import { ProcessorMode } from 'aws-cdk-lib/aws-stepfunctions';
+
+export const replicate = defineFunction({
+  name: 'replicate',
+  entry: './replicate/index.ts'
+});
 
 export const weixinWork = defineFunction({
   name: 'weixinWork',

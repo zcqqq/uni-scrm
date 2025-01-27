@@ -11,6 +11,9 @@
         "Prompt": "Prompt",
         "Generate": "Generate",
         "Re-Generate": "Re-Generate",
+        "Quality": "Quality",
+        "Quality.Normal": "Normal",
+        "Quality.High": "High",
         "black-forest-labs/flux-schnell": "Flux Schnell",
         "tencent/hunyuan-video": "Tencent Hunyuan"
     },

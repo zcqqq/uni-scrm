@@ -43,9 +43,6 @@ const ContentImage: React.FC = () => {
         fetchData();
     }, []);
 
-    console.log('selectedImagePath', selectedImagePath);
-    console.log('channels', channels);
-
     const [form] = Form.useForm();
     const handleSubmit = (values: any) => {
         contentBackend.postContentImage(values);
@@ -53,8 +50,11 @@ const ContentImage: React.FC = () => {
     };
 
     const handleReset = () => {
+        console.log('handleReset called');
+        console.log('isSubmitted before:', isSubmitted);
         form.resetFields();
         setIsSubmitted(false);
+        console.log('isSubmitted after setState call');
     };
 
     return (
@@ -66,9 +66,9 @@ const ContentImage: React.FC = () => {
                     <Flex gap="large">
                         <div style={{ flex: 1 }}>
                             <Flex align="center" gap={8}>
-                                <h3 style={{ margin: 0 }}>模型:</h3>
+                                <h3 style={{ margin: 0 }}>{i18n.t('Content:Model.Model')}:</h3>
                                 <Radio.Group defaultValue="1">
-                                    <Radio.Button value="1">{i18n.t('Content:Model.tencent/hunyuan-video')}
+                                    <Radio.Button value="1">{i18n.t('Content:Model.black-forest-labs/flux-schnell')}
                                     </Radio.Button>
                                 </Radio.Group>
                             </Flex>
@@ -92,15 +92,15 @@ const ContentImage: React.FC = () => {
                                 } required><Input />
                                 </Form.Item>
                                 <Form.Item name="prompt" label={
-                                    <span>提示词&nbsp;<Tooltip title="prompt"><QuestionCircleOutlined /></Tooltip></span>
+                                    <span>{i18n.t('Content:Model.Prompt')}&nbsp;<Tooltip title="prompt"><QuestionCircleOutlined /></Tooltip></span>
                                 } required><Input.TextArea rows={4} />
                                 </Form.Item>
                                 <Form.Item name="quality" label={
-                                    <span>品质&nbsp;<Tooltip title="prompt"><QuestionCircleOutlined /></Tooltip></span>
+                                    <span>{i18n.t('Content:Model.Quality')}&nbsp;<Tooltip title="prompt"><QuestionCircleOutlined /></Tooltip></span>
                                 }>
                                     <Radio.Group defaultValue="normal">
-                                        <Radio.Button value="normal">Normal</Radio.Button>
-                                        <Radio.Button value="high">High</Radio.Button>
+                                        <Radio.Button value="normal">{i18n.t('Content:Model.Quality.Normal')}</Radio.Button>
+                                        <Radio.Button value="high">{i18n.t('Content:Model.Quality.High')}</Radio.Button>
                                     </Radio.Group>
                                 </Form.Item>
                                 <Flex align="center" gap={4}>
@@ -119,7 +119,7 @@ const ContentImage: React.FC = () => {
                                         onClick={isSubmitted ? handleReset : undefined}
                                         disabled={false}
                                     >
-                                        {isSubmitted ? "重新生成" : "生成"}
+                                        {isSubmitted ? i18n.t('Content:Model.Re-Generate') : i18n.t('Content:Model.Generate')}
                                     </Button>
                                 </Form.Item>
                             </Form>

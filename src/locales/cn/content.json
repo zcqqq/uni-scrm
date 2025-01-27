@@ -11,6 +11,9 @@
         "Prompt": "提示词",
         "Generate": "生成",
         "Re-Generate":"重新生成",
+        "Quality": "品质",
+        "Quality.Normal": "普通",
+        "Quality.High": "高",
         "black-forest-labs/flux-schnell": "Flux Schnell",
         "tencent/hunyuan-video": "腾讯混元"
     },
