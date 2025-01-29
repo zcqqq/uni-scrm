@@ -65,13 +65,6 @@ const ContentImage: React.FC = () => {
                 <Content>
                     <Flex gap="large">
                         <div style={{ flex: 1 }}>
-                            <Flex align="center" gap={8}>
-                                <h3 style={{ margin: 0 }}>{i18n.t('Content:Model.Model')}:</h3>
-                                <Radio.Group defaultValue="1">
-                                    <Radio.Button value="1">{i18n.t('Content:Model.black-forest-labs/flux-schnell')}
-                                    </Radio.Button>
-                                </Radio.Group>
-                            </Flex>
                             <Form
                                 form={form}
                                 onFinish={handleSubmit}
@@ -79,6 +72,7 @@ const ContentImage: React.FC = () => {
                                 initialValues={{
                                     width: 864,
                                     height: 480,
+                                    model: "1"
                                 }}
                                 style={{ maxWidth: '500px', margin: '20px' }}
                                 layout="horizontal"
@@ -87,6 +81,20 @@ const ContentImage: React.FC = () => {
                                 colon={true}
                                 labelWrap={false}
                             >
+                                <Form.Item 
+                                    name="model" 
+                                    label={
+                                        <span>{i18n.t('Content:Model.Model')}&nbsp;
+                                            <Tooltip title="model"><QuestionCircleOutlined /></Tooltip>
+                                        </span>
+                                    }
+                                >
+                                    <Radio.Group>
+                                        <Radio.Button value="black-forest-labs/flux-schnell">
+                                            {i18n.t('Content:Model.black-forest-labs/flux-schnell')}
+                                        </Radio.Button>
+                                    </Radio.Group>
+                                </Form.Item>
                                 <Form.Item name="campaign" label={
                                     <span>活动&nbsp;<Tooltip title="campaign"><QuestionCircleOutlined /></Tooltip></span>
                                 } required><Input />

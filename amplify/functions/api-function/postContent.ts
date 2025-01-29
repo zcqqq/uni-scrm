@@ -11,6 +11,19 @@ export const postContent = async (event: APIGatewayProxyEvent): Promise<APIGatew
     const fetch = (await import('node-fetch')).default;
     const client = generateClient<Schema>();
 
+    // Get the Cognito identity from the request context
+    const cognitoIdentityId = event.requestContext.identity.cognitoIdentityId;
+    if (!cognitoIdentityId) {
+        return {
+            statusCode: 401,
+            body: JSON.stringify({ error: "Unauthorized - No valid identity" }),
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "*",
+            }
+        };
+    }
+
     if (!event.body) {
         return {
             statusCode: 400,
@@ -23,7 +36,7 @@ export const postContent = async (event: APIGatewayProxyEvent): Promise<APIGatew
     }
 
     // Initialize clients only when needed
-    const s3Client = new S3Client({ 
+    const s3Client = new S3Client({
         region: 'ap-east-1',
         maxAttempts: 3  // Add retry strategy
     });
@@ -50,7 +63,7 @@ export const postContent = async (event: APIGatewayProxyEvent): Promise<APIGatew
 
         // Upload to S3
         const s3Key = `public/${prompt}.webp`;
-        
+
         // First upload the file
         await s3Client.send(new PutObjectCommand({
             Bucket: 'file.uni-scrm.com',
@@ -61,10 +74,18 @@ export const postContent = async (event: APIGatewayProxyEvent): Promise<APIGatew
 
         const content = {
             content_type: 'IMAGE',
-            content_content: s3Key
+            content_content: s3Key,
+            content_campaign: body.campaign,
+            content_model: body.model,
+            content_prompt: body.prompt,
+            content_quality: body.quality,
+            content_width: body.width,
+            content_height: body.height,
         };
-        const { data: createdContent, errors } = await client.models.Content.create(content);
-        console.log('createdContent: ' + createdContent);
+        console.log('content:', JSON.stringify(content, null, 2));
+        const { data: createdContent, errors } = await client.models.Content.create(content, { authMode: 'userPool' });
+        console.log('createdContent:', JSON.stringify(createdContent, null, 2));  // Pretty print the entire object
+        console.log('errors:', errors);
 
         // After getting the content_id, update the S3 object with metadata
         if (createdContent?.id) {
@@ -77,7 +98,7 @@ export const postContent = async (event: APIGatewayProxyEvent): Promise<APIGatew
                     content_id: createdContent.id
                 },
             }));
-        }        
+        }
 
         return {
             statusCode: 200,

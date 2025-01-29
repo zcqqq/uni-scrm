@@ -46,6 +46,12 @@ const schema = a.schema({
     group: a.string(),
     content_type: a.string(),
     content_content: a.string(), //TODO 先模拟content的文本内容
+    content_campaign: a.string(),
+    content_model: a.string(),
+    content_prompt: a.string(),
+    content_quality: a.string(),
+    content_width: a.integer(),
+    content_height: a.integer(),
   }).authorization(allow => [allow.owner(),allow.groupDefinedIn('group')]),
   Strategy: a.model({
     tenant_id: a.string(),
