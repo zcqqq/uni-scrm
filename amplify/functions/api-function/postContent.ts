@@ -72,33 +72,16 @@ export const postContent = async (event: APIGatewayProxyEvent): Promise<APIGatew
             ContentType: "image/webp",
         }));
 
-        const content = {
-            content_type: 'IMAGE',
-            content_content: s3Key,
-            content_campaign: body.campaign,
-            content_model: body.model,
-            content_prompt: body.prompt,
-            content_quality: body.quality,
-            content_width: body.width,
-            content_height: body.height,
-        };
-        console.log('content:', JSON.stringify(content, null, 2));
-        const { data: createdContent, errors } = await client.models.Content.create(content, { authMode: 'userPool' });
-        console.log('createdContent:', JSON.stringify(createdContent, null, 2));  // Pretty print the entire object
-        console.log('errors:', errors);
 
-        // After getting the content_id, update the S3 object with metadata
-        if (createdContent?.id) {
-            await s3Client.send(new PutObjectCommand({
-                Bucket: 'file.uni-scrm.com',
-                Key: s3Key,
-                Body: imageBuffer,
-                ContentType: "image/webp",
-                Metadata: {
-                    content_id: createdContent.id
-                },
-            }));
-        }
+        await s3Client.send(new PutObjectCommand({
+            Bucket: 'file.uni-scrm.com',
+            Key: s3Key,
+            Body: imageBuffer,
+            ContentType: "image/webp",
+            Metadata: {
+                content_id: "content_id"
+            },
+        }));
 
         return {
             statusCode: 200,

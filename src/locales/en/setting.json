@@ -3,5 +3,12 @@
       "metadata": "Metadata",
       "customerAttributes": "Customer Attributes",
       "configuration": "Configuration"
+    },
+    "Billing": {
+      "Pro": "Pro",
+      "Ultra": "Ultra",
+      "Team": "Team",
+      "UltraNeeded": "Ultra Version Needed",
+      "TeamNeeded": "Team Version Needed"
     }
 }

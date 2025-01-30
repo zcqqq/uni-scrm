@@ -14,6 +14,10 @@
         "Quality": "Quality",
         "Quality.Normal": "Normal",
         "Quality.High": "High",
+        "Ratio": "Ratio",
+        "Ratio.Square": "1:1 Square",
+        "Ratio.Landscape": "16:9 Landscape",
+        "Ratio.Portrait": "9:16 Portrait",
         "black-forest-labs/flux-schnell": "Flux Schnell",
         "tencent/hunyuan-video": "Tencent Hunyuan"
     },

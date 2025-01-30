@@ -2,39 +2,47 @@
 
 import '@aws-amplify/ui-react/styles.css';
 import { list, ListPaginateWithPathOutput } from 'aws-amplify/storage';
+import { generateClient } from 'aws-amplify/data';
+import { type Schema } from '@/amplify/data/resource';
 import React, { useState, useEffect } from 'react';
-import { Radio, Button, Input, Image, Form, Flex, Tooltip, Layout, Checkbox, List } from 'antd';
+import { Radio, Button, Input, Image, Form, Flex, Tooltip, Layout, Checkbox, List, Select } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import Index from '../../index';
 import i18n from '../../i18n';
 import { contentBackend } from '../../../lib/content';
-import { channelBackend } from '../../../lib/channel';
 
+
+const client = generateClient<Schema>();
+type Channel = Schema['Channel']['type'];
+type Content = Schema['Content']['type'];
 const { Header, Content } = Layout;
 const ContentImage: React.FC = () => {
-    const [images, setImages] = useState<ListPaginateWithPathOutput>();
-    const [selectedImagePath, setSelectedImagePath] = useState<string | null>(null);
-    const [channels, setChannels] = useState<any[]>([]);
+    const [channels, setChannels] = useState<Channel[]>([]);
+    const [contents, setContents] = useState<Content[]>([]);
+    const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch images
-                const result = await list({
-                    path: ({ identityId }) => `public/image/`
-                });
-                const filteredItems = result.items.filter(item => !item.path.endsWith('/'));
-                setImages({ ...result, items: filteredItems });
-
-                // Set the first image as default
-                if (filteredItems.length > 0) {
-                    setSelectedImagePath(filteredItems[0].path);
-                }
-
                 // Fetch channels
-                const channelsList = await channelBackend.listChannels();
-                setChannels(channelsList);
+                const { data: channels, errors: listChannelsErrors } = await client.models.Channel.list({
+                    filter: { is_deleted: { eq: false } },
+                    authMode: 'userPool'
+                });
+                if(listChannelsErrors) console.error('listChannelsErrors:', JSON.stringify(listChannelsErrors, null, 2));
+                // Set all channel IDs as selected by default
+                setSelectedChannels(channels?.map((channel: { id: string }) => channel.id) || []);
+                setChannels(channels);
+
+                // Fetch contents
+                const { data: contents, errors: listContentsErrors } = await client.models.Content.list({
+                    filter: { content_type: { eq: 'IMAGE' } },
+                    limit: 5,
+                    authMode: 'userPool'
+                });
+                if(listContentsErrors) console.error('listContentsErrors:', JSON.stringify(listContentsErrors, null, 2));
+                setContents(contents);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -44,11 +52,20 @@ const ContentImage: React.FC = () => {
     }, []);
 
     const [form] = Form.useForm();
-    const handleSubmit = (values: any) => {
+    const handleSubmit = async (values: any) => {
+        const content = {
+            content_type: 'IMAGE',
+            content_campaign: values.campaign,
+            content_model: values.model,
+            content_prompt: values.prompt,
+            content_quality: values.quality,
+            content_ratio: values.ratio,
+          }
+          const { data: createdContent, errors: createdContentErrors } = await client.models.Content.create(content, { authMode: 'userPool' });
+          if(createdContentErrors) console.error('createdContentErrors:', JSON.stringify(createdContentErrors, null, 2));
         contentBackend.postContentImage(values);
         setIsSubmitted(true);
     };
-
     const handleReset = () => {
         console.log('handleReset called');
         console.log('isSubmitted before:', isSubmitted);
@@ -70,9 +87,9 @@ const ContentImage: React.FC = () => {
                                 onFinish={handleSubmit}
                                 disabled={isSubmitted}
                                 initialValues={{
-                                    width: 864,
-                                    height: 480,
-                                    model: "1"
+                                    model: "black-forest-labs/flux-schnell",
+                                    quality: "NORMAL",
+                                    ratio: "Square",
                                 }}
                                 style={{ maxWidth: '500px', margin: '20px' }}
                                 layout="horizontal"
@@ -81,19 +98,26 @@ const ContentImage: React.FC = () => {
                                 colon={true}
                                 labelWrap={false}
                             >
-                                <Form.Item 
-                                    name="model" 
+                                <Form.Item
+                                    name="model"
                                     label={
                                         <span>{i18n.t('Content:Model.Model')}&nbsp;
                                             <Tooltip title="model"><QuestionCircleOutlined /></Tooltip>
                                         </span>
                                     }
                                 >
-                                    <Radio.Group>
-                                        <Radio.Button value="black-forest-labs/flux-schnell">
-                                            {i18n.t('Content:Model.black-forest-labs/flux-schnell')}
-                                        </Radio.Button>
-                                    </Radio.Group>
+                                    <Select
+                                        onSelect={(value) => {
+                                            if (value != "black-forest-labs/flux-schnell") {
+                                                alert(i18n.t('Setting:Billing.UltraNeeded'));
+                                                form.setFieldValue('model', 'black-forest-labs/flux-schnell');
+                                            }
+                                        }}
+                                    >
+                                        <Select.Option value="black-forest-labs/flux-schnell">{i18n.t('Content:Model.black-forest-labs/flux-schnell')}</Select.Option>
+                                        <Select.Option value="abcd" style={{ color: '#999' }}>Flux Pro</Select.Option>
+                                        <Select.Option value="abcd" style={{ color: '#999' }}>Midjourney</Select.Option>
+                                    </Select>
                                 </Form.Item>
                                 <Form.Item name="campaign" label={
                                     <span>活动&nbsp;<Tooltip title="campaign"><QuestionCircleOutlined /></Tooltip></span>
@@ -104,21 +128,22 @@ const ContentImage: React.FC = () => {
                                 } required><Input.TextArea rows={4} />
                                 </Form.Item>
                                 <Form.Item name="quality" label={
-                                    <span>{i18n.t('Content:Model.Quality')}&nbsp;<Tooltip title="prompt"><QuestionCircleOutlined /></Tooltip></span>
+                                    <span>{i18n.t('Content:Model.Quality')}&nbsp;<Tooltip title="quality"><QuestionCircleOutlined /></Tooltip></span>
                                 }>
-                                    <Radio.Group defaultValue="normal">
-                                        <Radio.Button value="normal">{i18n.t('Content:Model.Quality.Normal')}</Radio.Button>
-                                        <Radio.Button value="high">{i18n.t('Content:Model.Quality.High')}</Radio.Button>
+                                    <Radio.Group>
+                                        <Radio.Button value="NORMAL">{i18n.t('Content:Model.Quality.Normal')}</Radio.Button>
+                                        <Radio.Button value="HIGH">{i18n.t('Content:Model.Quality.High')}</Radio.Button>
                                     </Radio.Group>
                                 </Form.Item>
-                                <Flex align="center" gap={4}>
-                                    {i18n.t('Content:File.Width')}
-                                    <Form.Item name="width" style={{ flex: 1, marginBottom: 0 }} ><Input type="number" /></Form.Item>
-                                    px&nbsp;&nbsp;&nbsp;&nbsp;
-                                    {i18n.t('Content:File.Height')}
-                                    <Form.Item name="height" style={{ flex: 1, marginBottom: 0 }}><Input type="number" /></Form.Item>
-                                    px
-                                </Flex>
+                                <Form.Item name="ratio" label={
+                                    <span>{i18n.t('Content:Model.Ratio')}&nbsp;<Tooltip title="ratio"><QuestionCircleOutlined /></Tooltip></span>
+                                }>
+                                    <Select>
+                                        <Select.Option value="Square">{i18n.t('Content:Model.Ratio.Square')}</Select.Option>
+                                        <Select.Option value="Landscape">{i18n.t('Content:Model.Ratio.Landscape')}</Select.Option>
+                                        <Select.Option value="Portrait">{i18n.t('Content:Model.Ratio.Portrait')}</Select.Option>
+                                    </Select>
+                                </Form.Item>
                                 <Form.Item style={{ marginTop: '24px', textAlign: 'center' }}>
                                     <Button
                                         type={isSubmitted ? "default" : "primary"}
@@ -134,24 +159,33 @@ const ContentImage: React.FC = () => {
                         </div>
 
                         <div style={{ flex: 2 }}>
-                        {i18n.t('Content:Current')}{i18n.t('Content:File.Image')}
+                            {i18n.t('Content:Current')}{i18n.t('Content:File.Image')}
+                            <Input.TextArea rows={4} placeholder='相关文案' />
                             <Flex justify="center">
                                 <Button type="primary" size="large" style={{ marginTop: '24px' }}>
-                                {i18n.t('Content:Publish')}
+                                    {i18n.t('Content:Publish')}
                                 </Button>
                             </Flex>
                             <div style={{ marginTop: '4px' }}></div>
-                            {
-                                channels.map((channel) => (
-                                    <Checkbox key={channel.id} style={{ marginTop: '24px' }}>{channel.channel_type}&nbsp;{channel.channel_name}</Checkbox>
-                                ))
-                            }
+                            <div style={{ marginBottom: '8px' }}>TIKTOK</div>
+                            <Select
+                                mode="multiple"
+                                value={selectedChannels}
+                                onChange={setSelectedChannels}
+                            >
+                                {channels.map((channel) => (
+                                    <Select.Option key={channel.id} value={channel.id}>
+                                        {channel.channel_name}
+                                    </Select.Option>
+                                ))}
+                            </Select>
                         </div>
 
                         <div style={{ flex: 1 }}>
-                        {i18n.t('Content:File.Image')}{i18n.t('Content:HistoryList')}
-                            {images?.items.map((item, index) => (
+                            {i18n.t('Content:File.Image')}{i18n.t('Content:HistoryList')}
+                            {contents.map((content, index) => (
                                 <div key={index}>
+                                    <Image src={`https://file.uni-scrm.com/${content.content_content}`} />
                                 </div>
                             ))}
                         </div>

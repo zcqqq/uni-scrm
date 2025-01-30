@@ -6,12 +6,14 @@ import { myApiFunction } from "../functions/api-function/resource";
 const schema = a.schema({
   //core
   Global: a.model({
+    group: a.string(),
     key: a.string(), //企业微信suite_ticket
     value: a.string(),
     timestamp: a.integer(),
   }),
   Tenant: a.model({
     is_deleted: a.boolean().default(false),
+    group: a.string(),
     tenant_name: a.string(),
     corpid: a.string(),
     quota_video_generation: a.integer(),
@@ -19,11 +21,12 @@ const schema = a.schema({
   }),
   User: a.model({
     is_deleted: a.boolean().default(false),
-    tenant_id: a.string(),
+    group: a.string(),
     email: a.string(),
   }),
   Channel: a.model({
     is_deleted: a.boolean().default(false),
+    group: a.string(),
     tenant_id: a.string(),
     channel_type: a.string(),
     channel_id: a.string(), //来自渠道的原始id
@@ -37,24 +40,35 @@ const schema = a.schema({
     refresh_token: a.string(),
     client_token: a.string(),
     client_expires_in: a.integer(),
+    contents: a.hasMany('ContentChannel', 'channel_id'),
 
     max_video_post_duration_sec: a.integer(), //TIKTOK
     privacy_level_options: a.string().array(), //TIKTOK
   }),
   Content: a.model({
-    tenant_id: a.string(),
     group: a.string(),
-    content_type: a.string(),
+    tenant_id: a.string(),
+    status_generate: a.string(),
+    content_type: a.enum(['IMAGE','TEXT','VIDEO']),
     content_content: a.string(), //TODO 先模拟content的文本内容
     content_campaign: a.string(),
     content_model: a.string(),
     content_prompt: a.string(),
-    content_quality: a.string(),
+    content_quality: a.enum(['NORMAL','HIGH']),
+    content_ratio: a.string(),
     content_width: a.integer(),
     content_height: a.integer(),
-  }).authorization(allow => [allow.owner(),allow.groupDefinedIn('group')]),
+    channels: a.hasMany('ContentChannel', 'content_id'),
+  }),
+  ContentChannel: a.model({
+    group: a.string(),
+    content_id: a.id().required(),
+    channel_id: a.id().required(),
+    content: a.belongsTo('Content', 'content_id'),
+    channel: a.belongsTo('Channel', 'channel_id'),
+  }),
   Strategy: a.model({
-    tenant_id: a.string(),
+    group: a.string(),
     strategy_name: a.string(),
     strategy_type: a.string(),
     triggerOption: a.string(),
@@ -63,12 +77,12 @@ const schema = a.schema({
     actionContent: a.string()
   }),
   Audience: a.model({
-    tenant_id: a.string(),
+    group: a.string(),
     audience_name: a.string(),
     audience_type: a.string(),
   }),
   Customer: a.model({
-    tenant_id: a.string(),
+    group: a.string(),
     nickname: a.string(),
     gender: a.string(),
     //身份
@@ -78,34 +92,34 @@ const schema = a.schema({
     field1: a.string(),
   }),
   Group: a.model({
-    tenant_id: a.string(),
+    group: a.string(),
     group_name: a.string(),
     group_type: a.string(),
   }),
   Tag: a.model({
-    tenant_id: a.string(),
+    group: a.string(),
     tag_name: a.string(),
     tag_type: a.string(),
     parent_folder_id: a.id(),
   }),
   TagFolder: a.model({
-    tenant_id: a.string(),
+    group: a.string(),
     folder_name: a.string(),
     parent_folder_id: a.id(),
   }),
   Event: a.model({
-    tenant_id: a.string(),
+    group: a.string(),
     event_type: a.string(),
     event_timestamp: a.integer(),
   }),
   //meta
   MetaCustomerField: a.model({
-    tenant_id: a.string(),
+    group: a.string(),
     field_id: a.string(),
     field_name: a.string(),
     field_type: a.string(),
   }),
-}).authorization(allow => [allow.publicApiKey(),allow.resource(myApiFunction),allow.resource(replicate),
+}).authorization(allow => [allow.owner(),allow.groupDefinedIn('group'),allow.publicApiKey(),allow.resource(myApiFunction),allow.resource(replicate),
 allow.resource(tiktok), allow.resource(weixinWork), allow.resource(postConfirmation)]);
 
 export type Schema = ClientSchema<typeof schema>;

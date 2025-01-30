@@ -14,6 +14,10 @@
         "Quality": "品质",
         "Quality.Normal": "普通",
         "Quality.High": "高",
+        "Ratio": "比例",
+        "Ratio.Square": "1:1 正方形",
+        "Ratio.Landscape": "16:9 横屏",
+        "Ratio.Portrait": "9:16 竖屏",
         "black-forest-labs/flux-schnell": "Flux Schnell",
         "tencent/hunyuan-video": "腾讯混元"
     },

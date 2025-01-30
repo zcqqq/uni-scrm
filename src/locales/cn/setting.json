@@ -1,7 +1,14 @@
 {
     "Menu": {
-      "metadata": "元数据",
-      "customerAttributes": "客户属性",
-      "configuration": "配置"
+      "Metadata": "元数据",
+      "CustomerAttributes": "客户属性",
+      "Configuration": "配置"
+    },
+    "Billing": {
+      "Pro": "Pro",
+      "Ultra": "Ultra",
+      "Team": "Team",
+      "UltraNeeded": "需要购买Ultra版",
+      "TeamNeeded": "需要购买Team版"
     }
 }
