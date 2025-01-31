@@ -42,7 +42,7 @@ const Channel: React.FC = () => {
           items={[
             {
               key: 'CONNECTED',
-              label: i18n.t('channel:tabs.connected'),
+              label: i18n.t('Channel:Tabs.Connected'),
               children: (
                 <Row gutter={36}>
                   {channels.map((channel) => (

@@ -54,15 +54,16 @@ const ContentImage: React.FC = () => {
     const [form] = Form.useForm();
     const handleSubmit = async (values: any) => {
         const content = {
-            content_type: 'IMAGE',
+            content_type: 'IMAGE' as const,
             content_campaign: values.campaign,
             content_model: values.model,
             content_prompt: values.prompt,
             content_quality: values.quality,
             content_ratio: values.ratio,
-          }
-          const { data: createdContent, errors: createdContentErrors } = await client.models.Content.create(content, { authMode: 'userPool' });
-          if(createdContentErrors) console.error('createdContentErrors:', JSON.stringify(createdContentErrors, null, 2));
+        }
+
+        const { data: createdContent, errors: createdContentErrors } = await client.models.Content.create(content, { authMode: 'userPool' });
+        if(createdContentErrors) console.error('createdContentErrors:', JSON.stringify(createdContentErrors, null, 2));
         contentBackend.postContentImage(values);
         setIsSubmitted(true);
     };

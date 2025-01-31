@@ -1,14 +1,14 @@
 {
   "TIKTOK": {
-    "channelType": "TikTok"
+    "ChannelType": "TikTok"
   },
   "DOUYIN": {
-    "channelType": "抖音企业号"
+    "ChannelType": "抖音企业号"
   },
   "WEIXIN": {
-    "channelType": "微信公众号"
+    "ChannelType": "微信公众号"
   },
   "WEIXINWORK": {
-    "channelType": "企业微信"
+    "ChannelType": "企业微信"
   }
 }
