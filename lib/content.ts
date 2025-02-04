@@ -13,36 +13,42 @@ interface contentParams {
   height: number;
 }
 
+interface contentChannelParams {
+  content_id: string;
+  content_type: string;
+  channel_id: string;
+  channel_type: string;
+}
+
 export const contentBackend = {
   postContentImage: async (params: contentParams) => {
 
     try {
-      const formData = new FormData();
+      let requestBody;
       if (params.model === 'black-forest-labs/flux-schnell') {
         type QualityType = 'NORMAL' | 'HIGH';
         const qualitySettings = {
-          'NORMAL': { go_fast: 'true', megapixels: '1', num_outputs:'1', output_quality:'80', num_inference_steps:'1'},
-          'HIGH': { go_fast: 'false', megapixels: '10', num_outputs:'4', output_quality:'100', num_inference_steps:'4'},
+          'NORMAL': { go_fast: 'true', megapixels: '1', num_outputs: '1', output_quality: '80', num_inference_steps: '1' },
+          'HIGH': { go_fast: 'false', megapixels: '10', num_outputs: '4', output_quality: '100', num_inference_steps: '4' },
         };
 
         const settings = qualitySettings[params.quality as QualityType] || qualitySettings['NORMAL'];
-        
-        const searchParams = new URLSearchParams({
+
+        requestBody = {
           model: params.model,
           prompt: params.prompt,
           ...settings
-        });
-        
-        searchParams.forEach((value, key) => {
-          formData.append(key, value);
-        });
+        };
       }
 
       const restOperation = post({
         apiName: 'myRestApi',
         path: 'content',
         options: {
-          body: formData
+          body: JSON.stringify(requestBody),
+          headers: {
+            'Content-Type': 'application/json'
+          }
         }
       });
 
@@ -76,4 +82,32 @@ export const contentBackend = {
       console.log('POST call failed: ', JSON.parse(error.response.body));
     }
   },
+
+  postContentChannelImageTiktok: async (params: contentChannelParams) => {
+    const requestBody = {
+      content_type: params.content_type,
+      channel_type: params.channel_type
+    };
+
+    try {
+      const restOperation = post({
+        apiName: 'myRestApi',
+        path: `content/${params.content_id}/channel/${params.channel_id}`,
+        options: {
+          body: JSON.stringify(requestBody),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      });
+
+      const { body } = await restOperation.response;
+      const response = await body.json();
+
+      console.log('POST call succeeded');
+      console.log(response);
+    } catch (error: any) {
+      console.log('POST call failed: ', JSON.parse(error.response.body));
+    }
+  }
 };

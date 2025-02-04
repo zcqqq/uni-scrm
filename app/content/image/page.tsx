@@ -6,7 +6,7 @@ import { generateClient } from 'aws-amplify/data';
 import { type Schema } from '@/amplify/data/resource';
 import React, { useState, useEffect } from 'react';
 import { Radio, Button, Input, Image, Form, Flex, Tooltip, Layout, Checkbox, List, Select } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { CheckOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import Index from '../../index';
 import i18n from '../../i18n';
 import { contentBackend } from '../../../lib/content';
@@ -15,10 +15,13 @@ import { contentBackend } from '../../../lib/content';
 const client = generateClient<Schema>();
 type Channel = Schema['Channel']['type'];
 type Content = Schema['Content']['type'];
+type ContentChannel = Schema['ContentChannel']['type'];
 const { Header, Content } = Layout;
 const ContentImage: React.FC = () => {
     const [channels, setChannels] = useState<Channel[]>([]);
     const [contents, setContents] = useState<Content[]>([]);
+    const [selectedContent, setSelectedContent] = useState<Content>();
+    const [contentChannels, setContentChannels] = useState<ContentChannel[]>([]);
     const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -30,7 +33,7 @@ const ContentImage: React.FC = () => {
                     filter: { is_deleted: { eq: false } },
                     authMode: 'userPool'
                 });
-                if(listChannelsErrors) console.error('listChannelsErrors:', JSON.stringify(listChannelsErrors, null, 2));
+                if (listChannelsErrors) console.error('listChannelsErrors:', JSON.stringify(listChannelsErrors, null, 2));
                 // Set all channel IDs as selected by default
                 setSelectedChannels(channels?.map((channel: { id: string }) => channel.id) || []);
                 setChannels(channels);
@@ -41,8 +44,20 @@ const ContentImage: React.FC = () => {
                     limit: 5,
                     authMode: 'userPool'
                 });
-                if(listContentsErrors) console.error('listContentsErrors:', JSON.stringify(listContentsErrors, null, 2));
+                if (listContentsErrors) console.error('listContentsErrors:', JSON.stringify(listContentsErrors, null, 2));
                 setContents(contents);
+
+                // Fetch contentChannels
+                const { data: contentChannels, errors: listContentChannelsErrors } = await client.models.ContentChannel.list({
+                    filter: { content_id: { eq: contents[0].id } },
+                    authMode: 'userPool'
+                });
+                if (listContentChannelsErrors) console.error('listContentChannelsErrors:', JSON.stringify(listContentChannelsErrors, null, 2));
+                setContentChannels(contentChannels);
+
+                if (contentChannels) {
+                    setSelectedContent(contents[0]);
+                }
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -52,7 +67,7 @@ const ContentImage: React.FC = () => {
     }, []);
 
     const [form] = Form.useForm();
-    const handleSubmit = async (values: any) => {
+    const handleGenerate = async (values: any) => {
         const content = {
             content_type: 'IMAGE' as const,
             content_campaign: values.campaign,
@@ -63,16 +78,35 @@ const ContentImage: React.FC = () => {
         }
 
         const { data: createdContent, errors: createdContentErrors } = await client.models.Content.create(content, { authMode: 'userPool' });
-        if(createdContentErrors) console.error('createdContentErrors:', JSON.stringify(createdContentErrors, null, 2));
+        if (createdContentErrors) console.error('createdContentErrors:', JSON.stringify(createdContentErrors, null, 2));
         contentBackend.postContentImage(values);
         setIsSubmitted(true);
     };
-    const handleReset = () => {
+    const handleRegenerate = () => {
         console.log('handleReset called');
         console.log('isSubmitted before:', isSubmitted);
         form.resetFields();
         setIsSubmitted(false);
         console.log('isSubmitted after setState call');
+    };
+
+    const handlePublish = async () => {
+        if (!selectedContent?.id) {
+            console.error('No content selected');
+            return;
+        }
+
+        await Promise.all(selectedChannels.map(async channelId => {
+            const contentChannel = {
+                content_id: selectedContent.id,
+                channel_id: channelId,
+                content_type: 'IMAGE' as const,
+                channel_type: channels.find(channel => channel.id === channelId)?.channel_type || '',
+            }
+            const { data: createdContentChannel, errors: createdContentChannelErrors } = await client.models.ContentChannel.create(contentChannel, { authMode: 'userPool' });
+            if (createdContentChannelErrors) console.error('createdContentChannelErrors:', JSON.stringify(createdContentChannelErrors, null, 2));
+            contentBackend.postContentChannelImageTiktok(contentChannel);
+        }));
     };
 
     return (
@@ -85,7 +119,7 @@ const ContentImage: React.FC = () => {
                         <div style={{ flex: 1 }}>
                             <Form
                                 form={form}
-                                onFinish={handleSubmit}
+                                onFinish={handleGenerate}
                                 disabled={isSubmitted}
                                 initialValues={{
                                     model: "black-forest-labs/flux-schnell",
@@ -150,7 +184,7 @@ const ContentImage: React.FC = () => {
                                         type={isSubmitted ? "default" : "primary"}
                                         htmlType={isSubmitted ? "button" : "submit"}
                                         size="large"
-                                        onClick={isSubmitted ? handleReset : undefined}
+                                        onClick={isSubmitted ? handleRegenerate : undefined}
                                         disabled={false}
                                     >
                                         {isSubmitted ? i18n.t('Content:Model.Re-Generate') : i18n.t('Content:Model.Generate')}
@@ -161,25 +195,23 @@ const ContentImage: React.FC = () => {
 
                         <div style={{ flex: 2 }}>
                             {i18n.t('Content:Current')}{i18n.t('Content:File.Image')}
+                            <Image src={`https://file.uni-scrm.com/${selectedContent?.content_content}`} />
                             <Input.TextArea rows={4} placeholder='相关文案' />
                             <Flex justify="center">
-                                <Button type="primary" size="large" style={{ marginTop: '24px' }}>
+                                <Button type="primary" size="large" onClick={handlePublish} style={{ marginTop: '24px' }}>
                                     {i18n.t('Content:Publish')}
                                 </Button>
                             </Flex>
                             <div style={{ marginTop: '4px' }}></div>
-                            <div style={{ marginBottom: '8px' }}>TIKTOK</div>
-                            <Select
-                                mode="multiple"
-                                value={selectedChannels}
+                            <Checkbox.Group value={selectedChannels}
                                 onChange={setSelectedChannels}
                             >
                                 {channels.map((channel) => (
-                                    <Select.Option key={channel.id} value={channel.id}>
-                                        {channel.channel_name}
-                                    </Select.Option>
+                                    <Checkbox key={channel.id} value={channel.id}>
+                                        {channel.channel_type}&nbsp;{channel.channel_name}
+                                    </Checkbox>
                                 ))}
-                            </Select>
+                            </Checkbox.Group>
                         </div>
 
                         <div style={{ flex: 1 }}>

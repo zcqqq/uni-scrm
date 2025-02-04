@@ -63,10 +63,14 @@ const schema = a.schema({
   ContentChannel: a.model({
     group: a.string(),
     content_id: a.id().required(),
+    content_type: a.enum(['IMAGE','TEXT','VIDEO']),
     channel_id: a.id().required(),
+    channel_type: a.string(),
+    publish_id: a.string(),
+    publish_status: a.string(),
     content: a.belongsTo('Content', 'content_id'),
     channel: a.belongsTo('Channel', 'channel_id'),
-  }),
+  }).secondaryIndexes((index) => [index('publish_id')]),
   Strategy: a.model({
     group: a.string(),
     strategy_name: a.string(),
