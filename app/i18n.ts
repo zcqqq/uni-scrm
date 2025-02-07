@@ -14,7 +14,7 @@ export const fallbackNS = 'Fallback';
 
 i18next.init({
   debug: false,
-  fallbackLng: navigator.language.split('-')[0].toUpperCase() || 'EN',
+  fallbackLng: 'EN',
   defaultNS,
   fallbackNS,
   resources: {

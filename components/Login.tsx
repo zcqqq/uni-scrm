@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 import { I18n } from 'aws-amplify/utils';
 import { translations } from '@aws-amplify/ui-react';
 I18n.putVocabularies(translations);
-I18n.setLanguage(navigator.language.split('-')[0] || 'en');
+I18n.setLanguage('en');
 
 I18n.putVocabularies({
   zh: {
