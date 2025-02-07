@@ -1,4 +1,8 @@
 {
+  "Tab": {
+    "Existing": "已有渠道",
+    "New": "新建渠道"
+  },
   "TIKTOK": {
     "ChannelType": "TikTok"
   },

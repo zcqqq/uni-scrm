@@ -13,25 +13,25 @@ export const defaultNS = 'Main';
 export const fallbackNS = 'Fallback';
 
 i18next.init({
-  debug: true,
-  fallbackLng: 'cn',
+  debug: false,
+  fallbackLng: navigator.language.split('-')[0].toUpperCase() || 'EN',
   defaultNS,
   fallbackNS,
   resources: {
-    en: {
+    EN: {
       Main: enMain,
       Channel: enChannel,
       Content: enContent,
       Setting: enSetting,
       Fallback: enFallback,
     },
-    cn: {
+    CN: {
       Main: cnMain,
       Channel: cnChannel,
       Content: cnContent,
       Setting: cnSetting,
     },
-  },
+  }
 });
 
 export default i18next;

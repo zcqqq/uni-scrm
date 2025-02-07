@@ -11,6 +11,10 @@
     "Data": "Data",
     "Customer": "Customer",
     "Group": "Group",
-    "Tag": "Tag"
+    "Tag": "Tag",
+    "Setting": "Setting"
+  },
+  "Form": {
+    "Save": "Save"
   }
 }

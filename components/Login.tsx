@@ -4,6 +4,23 @@
 import { Authenticator } from "@aws-amplify/ui-react";
 import { AuthUser } from "aws-amplify/auth";
 import { redirect } from "next/navigation";
+import { I18n } from 'aws-amplify/utils';
+import { translations } from '@aws-amplify/ui-react';
+I18n.putVocabularies(translations);
+I18n.setLanguage(navigator.language.split('-')[0] || 'en');
+
+I18n.putVocabularies({
+  zh: {
+    'Nickname': '公司名称',
+    'Enter your Nickname': '输入公司名称',
+    'Password is shown': '隐藏密码',
+    'Password is hidden': '显示密码',
+  },
+  en: {
+    'Nickname': 'Company Name',
+    'Enter your Nickname': 'Enter your Company name',
+  },
+});
 
 function Login({ user }: { user?: AuthUser }) {
   return (

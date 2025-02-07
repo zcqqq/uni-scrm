@@ -15,6 +15,19 @@ import Link from 'next/link';
 
 const { Header } = Layout;
 const { Meta } = Card;
+
+const cardStyle = {
+  width: '100%',
+  height: '100%'
+};
+
+const imageStyle = {
+  width: '100%',
+  height: '160px', // Fixed height for all images
+  objectFit: 'contain' as const,
+  padding: '20px'
+};
+
 const Channel: React.FC = () => {
   const [channels, setChannels] = useState<any[]>([]);
 
@@ -35,14 +48,14 @@ const Channel: React.FC = () => {
     `&state=0`;
 
   return (
-    <Layout hasSider>
+    <Layout style={{ minHeight: '100vh' }}>
       <Index />
-      <Layout style={{ marginLeft: 200 }}>
+      <Layout style={{ marginLeft: 200, minHeight: '100vh', padding: '24px' }}>
         <Tabs
           items={[
             {
               key: 'CONNECTED',
-              label: i18n.t('Channel:Tabs.Connected'),
+              label: i18n.t('Channel:Tab.Existing'),
               children: (
                 <Row gutter={36}>
                   {channels.map((channel) => (
@@ -72,61 +85,67 @@ const Channel: React.FC = () => {
             },
             {
               key: 'CREATE',
-              label: i18n.t('channel:tabs.create'),
+              label: i18n.t('Channel:Tab.New'),
               children: (
                 <Row gutter={36}>
                   <Col span={4}>
                     <Card
                       bordered={true}
+                      style={cardStyle}
                       cover={
                         <img
                           src="/asset/logo/tiktok.png"
+                          style={imageStyle}
                         />
                       }
                       actions={[<SettingOutlined key="connectTiktok" onClick={() => window.open(tiktokAuthUrl, '_blank')} />]}
                     >
-                      <Meta title={i18n.t('channel:tiktok.channelType')} style={{ textAlign: 'center' }} />
+                      <Meta title={i18n.t('Channel:TIKTOK.ChannelType')} style={{ textAlign: 'center' }} />
                     </Card>
                   </Col>
                   <Col span={4}>
                     <Card
                       bordered={true}
+                      style={cardStyle}
                       cover={
                         <img
                           src="/asset/logo/douyin.svg"
+                          style={imageStyle}
                         />
                       }
                       actions={[<SettingOutlined key="connectTiktok" onClick={() => window.open(tiktokAuthUrl, '_blank')} />]}
                     >
-                      <Meta title={i18n.t('channel:douyin.channelType')} style={{ textAlign: 'center' }} />
+                      <Meta title={i18n.t('Channel:DOUYIN.ChannelType')} style={{ textAlign: 'center' }} />
                     </Card>
                   </Col>
                   <Col span={4}>
                     <Card
                       bordered={true}
+                      style={cardStyle}
                       cover={
                         <img
                           src="/asset/logo/weixin.png"
+                          style={imageStyle}
                         />
                       }
-                      actions={[<SettingOutlined key="connectWeixin" onClick={() => window.open('https://baidu.com', '_blank')}
-                      />]}
+                      actions={[<SettingOutlined key="connectWeixin" onClick={() => window.open('https://baidu.com', '_blank')} />]}
                     >
-                      <Meta title={i18n.t('channel:weixin.channelType')} style={{ textAlign: 'center' }} />
+                      <Meta title={i18n.t('Channel:WEIXIN.ChannelType')} style={{ textAlign: 'center' }} />
                     </Card>
                   </Col>
                   <Col span={4}>
                     <Card
                       bordered={true}
+                      style={cardStyle}
                       cover={
                         <img
                           src="/asset/logo/weixinwork.png"
+                          style={imageStyle}
                         />
                       }
-                      actions={[<SettingOutlined key="connectWeixinWork" onClick={() => window.open('https://baidu.com', '_blank')}
-                      />]}
+                      actions={[<SettingOutlined key="connectWeixinWork" onClick={() => window.open('https://baidu.com', '_blank')} />]}
                     >
-                      <Meta title={i18n.t('channel:weixinwork.channelType')} style={{ textAlign: 'center' }} />
+                      <Meta title={i18n.t('Channel:WEIXINWORK.ChannelType')} style={{ textAlign: 'center' }} />
                     </Card>
                   </Col>
                 </Row>

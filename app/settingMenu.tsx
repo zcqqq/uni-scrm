@@ -5,10 +5,10 @@ import { getCurrentUser } from 'aws-amplify/auth';
 import { Flex, Menu, Image } from 'antd';
 import type { MenuProps } from 'antd';
 import Sider from 'antd/es/layout/Sider';
-import { HomeOutlined, UserOutlined, TeamOutlined, TagOutlined, ReadOutlined, CommentOutlined, SubnodeOutlined, SettingOutlined } from '@ant-design/icons';
+import { HomeOutlined, RollbackOutlined, SmileOutlined,UserOutlined, TeamOutlined, TagOutlined, ReadOutlined, CommentOutlined, SubnodeOutlined, SettingOutlined } from '@ant-design/icons';
 import i18next from './i18n';
 
-const Index: React.FC = () => {
+const SettingMenu: React.FC = () => {
   type MenuItem = Required<MenuProps>['items'][number];
   
   function getItem(
@@ -31,22 +31,14 @@ const Index: React.FC = () => {
   }
 
   const items: MenuProps['items'] = [
-    getItem(i18next.t('Menu.Home'), '/channel', <HomeOutlined />),
-    getItem(i18next.t('Menu.Marketing'), '/marketing', null, [
-      getItem(i18next.t('Menu.Content'), '/content', <ReadOutlined/>, [
-        getItem(i18next.t('Menu.Content.Image'), '/content/image', null),
-        getItem(i18next.t('Menu.Content.Text'), '/content/text', null),
-        getItem(i18next.t('Menu.Content.Video'), '/content/video', null)
-      ]),
-      getItem(i18next.t('Menu.Strategy'), '/strategy', <Image src='/asset/icon/coming_soon.svg' height={24} width={24} />, undefined, undefined, { disabled: true }),
-      getItem(i18next.t('Menu.Audience'), '/audience', <Image src='/asset/icon/coming_soon.svg' height={24} width={24} />, undefined, undefined, { disabled: true }),
+    getItem(i18next.t('Setting:Menu.BackToHome'), '/channel', <RollbackOutlined />),
+    getItem(i18next.t('Setting:Menu.Personalization'), '/personalization', <SmileOutlined />),
+    getItem(i18next.t('Setting:Menu.Metadata'), '/metadata', null, [
+      getItem(i18next.t('Setting:Metadata.CustomerAttributes'), '/metadata/customerAttributes', <Image src='/asset/icon/coming_soon.svg' height={24} width={24} />, undefined, undefined, { disabled: true }),
     ], 'group'),
-    getItem(i18next.t('Menu.Data'), '/data', null, [
-      getItem(i18next.t('Menu.Customer'), '/customer', <Image src='/asset/icon/coming_soon.svg' height={24} width={24} />, undefined, undefined, { disabled: true }),
-      getItem(i18next.t('Menu.Group'), '/group', <Image src='/asset/icon/coming_soon.svg' height={24} width={24} />, undefined, undefined, { disabled: true }),
-      getItem(i18next.t('Menu.Tag'), '/tag', <Image src='/asset/icon/coming_soon.svg' height={24} width={24} />, undefined, undefined, { disabled: true }),
-    ], 'group'),
-    getItem(i18next.t('Menu.Setting'), '/personalization', <SettingOutlined />),
+    getItem(i18next.t('Setting:Menu.Configuration'), '/configuration', null, [
+      getItem(i18next.t('Setting:Billing.Billing'), '/billing', <Image src='/asset/icon/coming_soon.svg' height={24} width={24} />, undefined, undefined, { disabled: true }),
+      ], 'group'),
   ];  
 
   const [loginId, setLoginId] = useState(String);
@@ -106,4 +98,4 @@ const Index: React.FC = () => {
   );
 };
 
-export default Index;
+export default SettingMenu;

@@ -40,6 +40,13 @@ const schema = a.schema({
     refresh_token: a.string(),
     client_token: a.string(),
     client_expires_in: a.integer(),
+
+    is_verified: a.boolean(),
+    avatar_url: a.string(),
+    bio_description: a.string(),
+    likes_count: a.integer(),
+    follower_count: a.integer(),
+    following_count: a.integer(),
     contents: a.hasMany('ContentChannel', 'channel_id'),
 
     max_video_post_duration_sec: a.integer(), //TIKTOK
