@@ -17,13 +17,13 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 const client = generateClient<Schema>();
 type Channel = Schema['Channel']['type'];
 type Content = Schema['Content']['type'];
-type ContentChannel = Schema['ContentChannel']['type'];
+type ContentPublish = Schema['ContentPublish']['type'];
 const { Header, Content } = Layout;
 const ContentImage: React.FC = () => {
     const [channels, setChannels] = useState<Channel[]>([]);
     const [contents, setContents] = useState<Content[]>([]);
     const [selectedContent, setSelectedContent] = useState<Content>();
-    const [contentChannels, setContentChannels] = useState<ContentChannel[]>([]);
+    const [contentPublishs, setContentPublishs] = useState<ContentPublish[]>([]);
     const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [entityId, setEntityId] = useState<string>('');
@@ -56,17 +56,7 @@ const ContentImage: React.FC = () => {
                 if (listContentsErrors) console.error('listContentsErrors:', JSON.stringify(listContentsErrors, null, 2));
                 setContents(contents);
 
-                // Fetch contentChannels
-                const { data: contentChannels, errors: listContentChannelsErrors } = await client.models.ContentChannel.list({
-                    filter: { content_id: { eq: contents[0].id } },
-                    authMode: 'userPool'
-                });
-                if (listContentChannelsErrors) console.error('listContentChannelsErrors:', JSON.stringify(listContentChannelsErrors, null, 2));
-                setContentChannels(contentChannels);
-
-                if (contentChannels) {
-                    setSelectedContent(contents[0]);
-                }
+                setSelectedContent(contents[0]);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -111,15 +101,13 @@ const ContentImage: React.FC = () => {
         }
 
         await Promise.all(selectedChannels.map(async channelId => {
-            const contentChannel = {
+            const contentPublish = {
                 content_id: selectedContent.id,
                 channel_id: channelId,
-                content_type: 'IMAGE' as const,
-                channel_type: channels.find(channel => channel.id === channelId)?.channel_type || '',
             }
-            const { data: createdContentChannel, errors: createdContentChannelErrors } = await client.models.ContentChannel.create(contentChannel, { authMode: 'userPool' });
-            if (createdContentChannelErrors) console.error('createdContentChannelErrors:', JSON.stringify(createdContentChannelErrors, null, 2));
-            contentBackend.postContentChannelImageTiktok(contentChannel);
+            const { data: createdContentPublish, errors: createdContentPublishErrors } = await client.models.ContentPublish.create(contentPublish, { authMode: 'userPool' });
+            if (createdContentPublishErrors) console.error('createdContentPublishErrors:', JSON.stringify(createdContentPublishErrors, null, 2));
+            contentBackend.postContentPublishImageTiktok(createdContentPublish?.id || '');
         }));
     };
 
@@ -211,7 +199,7 @@ const ContentImage: React.FC = () => {
                             <div style={{ padding: '16px', textAlign: 'center' }}>
                                 {i18n.t('Content:Current')}{i18n.t('Content:File.Image')}
                             </div>
-                            
+
                             {/* Image preview area */}
                             <div
                                 style={{
@@ -227,19 +215,19 @@ const ContentImage: React.FC = () => {
                                     style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }}
                                 />
                             </div>
-                            
+
                             {/* Input text area */}
                             <div style={{ padding: '16px' }}>
                                 <Input.TextArea rows={4} placeholder='相关文案' />
                             </div>
-                            
+
                             {/* Publish button */}
                             <div style={{ padding: '16px', display: 'flex', justifyContent: 'center' }}>
                                 <Button type="primary" size="large" onClick={handlePublish}>
                                     {i18n.t('Content:Publish')}
                                 </Button>
                             </div>
-                            
+
                             {/* Channel selection */}
                             <div style={{ padding: '8px 16px' }}>
                                 <Checkbox.Group value={selectedChannels} onChange={setSelectedChannels}>

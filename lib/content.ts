@@ -13,13 +13,6 @@ interface contentParams {
   height: number;
 }
 
-interface contentChannelParams {
-  content_id: string;
-  content_type: string;
-  channel_id: string;
-  channel_type: string;
-}
-
 export const contentBackend = {
   postContentImage: async (params: contentParams, content_id: string, content_content: string) => {
 
@@ -87,18 +80,12 @@ export const contentBackend = {
     }
   },
 
-  postContentChannelImageTiktok: async (params: contentChannelParams) => {
-    const requestBody = {
-      content_type: params.content_type,
-      channel_type: params.channel_type
-    };
-
+  postContentPublishImageTiktok: async (contentPublishId: string) => {
     try {
       const restOperation = post({
         apiName: 'myRestApi',
-        path: `content/${params.content_id}/channel/${params.channel_id}`,
+        path: `contentPublish/${contentPublishId}`,
         options: {
-          body: requestBody,
           headers: {
             'Content-Type': 'application/json'
           }

@@ -1,26 +1,23 @@
 import type { APIGatewayProxyHandler } from "aws-lambda";
 import { postContent } from "./postContent";
-import { getContent } from "./getContent";
-import { postContentChannel } from "./postContentChannel";
+import { postContentPublish } from "./postContentPublish";
 import { Amplify } from 'aws-amplify';
 import { getAmplifyDataClientConfig } from '@aws-amplify/backend/function/runtime';
 import { env } from "$amplify/env/api-function";
-const { resourceConfig, libraryOptions } = await getAmplifyDataClientConfig(
-  env
-);
-Amplify.configure(resourceConfig, libraryOptions);
+
+const { resourceConfig, libraryOptions } = await getAmplifyDataClientConfig(env);
+if ('invalidType' in resourceConfig) {
+  throw new Error('Invalid Amplify configuration');
+}
+Amplify.configure(resourceConfig, libraryOptions as any);
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   console.log("event", event);
   if(event.httpMethod === "POST" && event.path === "/content") {
     return postContent(event);
   } 
-  else if(event.httpMethod === "GET" && event.path === "/content") {
-    return getContent(event);
-  }
-  else if(event.httpMethod === "POST" && event.path.match(/^\/content\/[\w-]+\/channel\/[\w-]+$/)) {
-    const [, , contentId, ,channelId ] = event.path.split('/');
-    return postContentChannel({ ...event, pathParameters: { contentId, channelId } });
+  else if(event.httpMethod === "POST" && event.path.startsWith("/contentPublish")) {
+    return postContentPublish(event);
   }
   else {
   return {

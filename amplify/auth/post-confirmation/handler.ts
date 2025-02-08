@@ -8,10 +8,11 @@ import { generateClient } from 'aws-amplify/data';
 import { Amplify } from 'aws-amplify';
 import { getAmplifyDataClientConfig } from '@aws-amplify/backend/function/runtime';
 import { env } from "$amplify/env/post-confirmation";
-const { resourceConfig, libraryOptions } = await getAmplifyDataClientConfig(
-    env
-);
-Amplify.configure(resourceConfig, libraryOptions);
+const { resourceConfig, libraryOptions } = await getAmplifyDataClientConfig(env);
+if ('invalidType' in resourceConfig) {
+    throw new Error('Invalid Amplify configuration');
+}
+Amplify.configure(resourceConfig, libraryOptions as any);
 
 const client = new CognitoIdentityProviderClient();
 const dataClient = generateClient<Schema>();

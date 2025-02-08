@@ -47,17 +47,19 @@ const schema = a.schema({
     likes_count: a.integer(),
     follower_count: a.integer(),
     following_count: a.integer(),
-    contents: a.hasMany('ContentChannel', 'channel_id'),
 
     max_video_post_duration_sec: a.integer(), //TIKTOK
     privacy_level_options: a.string().array(), //TIKTOK
+
+    contentPublishs: a.hasMany('ContentPublish', 'channel_id'),
   }),
   Content: a.model({
     group: a.string(),
     tenant_id: a.string(),
     status_generate: a.string(),
     content_type: a.enum(['IMAGE','TEXT','VIDEO']),
-    content_content: a.string(), //TODO 先模拟content的文本内容
+    content_title: a.string(),
+    content_content: a.string(), //文件链接
     content_campaign: a.string(),
     content_model: a.string(),
     content_prompt: a.string(),
@@ -65,16 +67,16 @@ const schema = a.schema({
     content_ratio: a.string(),
     content_width: a.integer(),
     content_height: a.integer(),
-    channels: a.hasMany('ContentChannel', 'content_id'),
+
+    contentPublishs: a.hasMany('ContentPublish', 'content_id'),
   }),
-  ContentChannel: a.model({
+  ContentPublish: a.model({
     group: a.string(),
     content_id: a.id().required(),
-    content_type: a.enum(['IMAGE','TEXT','VIDEO']),
     channel_id: a.id().required(),
-    channel_type: a.string(),
     publish_id: a.string(),
     publish_status: a.string(),
+
     content: a.belongsTo('Content', 'content_id'),
     channel: a.belongsTo('Channel', 'channel_id'),
   }).secondaryIndexes((index) => [index('publish_id')]),

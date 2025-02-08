@@ -63,16 +63,15 @@ const contentPath = myRestApi.root.addResource("content", {
     authorizationType: AuthorizationType.IAM,
   },
 });
-contentPath.addMethod("GET", lambdaIntegration);
 contentPath.addMethod("POST", lambdaIntegration);
-const contentIdPath = contentPath.addResource("{contentId}");
-const contentChannelPath = contentIdPath.addResource("channel");
-const contentChannelIdPath = contentChannelPath.addResource("{channelId}", {
+
+const contentPublishPath = myRestApi.root.addResource("contentPublish", {
   defaultMethodOptions: {
     authorizationType: AuthorizationType.IAM,
   },
 });
-contentChannelIdPath.addMethod("POST", lambdaIntegration);
+const contentPublishIdPath = contentPublishPath.addResource("{contentPublishId}");
+contentPublishIdPath.addMethod("POST", lambdaIntegration);
 
 // create a new Cognito User Pools authorizer
 const cognitoAuth = new CognitoUserPoolsAuthorizer(apiStack, "CognitoAuth", {
@@ -91,8 +90,8 @@ const apiRestPolicy = new Policy(apiStack, "RestApiPolicy", {
     new PolicyStatement({
       actions: ["execute-api:Invoke"],
       resources: [
-        `${myRestApi.arnForExecuteApi("*", "/content", "dev")}`,
-        `${myRestApi.arnForExecuteApi("*", "/content/*/channel/*", "dev")}`,
+        `${myRestApi.arnForExecuteApi("*", "/content/*", "dev")}`,
+        `${myRestApi.arnForExecuteApi("*", "/contentPublish/*", "dev")}`,
         `${myRestApi.arnForExecuteApi("*", "/cognito-auth-path", "dev")}`,
       ],
     }),
