@@ -1,13 +1,17 @@
 {
+    "Current": "当前",
+    "HistoryList": "历史列表",
+    "Publish": "发布",
     "File": {
+        "Title": "标题",
         "Image": "图片",
-        "Text": "文本",
         "Video": "视频",
         "Width": "宽",
         "Height": "高"
     },
     "Model": {
         "Model": "模型",
+        "BaseModel": "基础模型",
         "Prompt": "提示词",
         "Generate": "生成",
         "Re-Generate":"重新生成",
@@ -18,10 +22,17 @@
         "Ratio.Square": "1:1 正方形",
         "Ratio.Landscape": "16:9 横屏",
         "Ratio.Portrait": "9:16 竖屏",
+        "meta/meta-llama-3-8b-instruct": "Meta Llama",
+        "deepseek-ai/deepseek-r1": "深度求索DeepSeek R1",
         "black-forest-labs/flux-schnell": "Flux Schnell",
-        "tencent/hunyuan-video": "腾讯混元"
+        "kwaivgi/kling-v1.6-standard": "快手可灵720P",
+        "kwaivgi/kling-v1.6-pro": "快手可灵1080P"
     },
-    "Current": "当前",
-    "HistoryList": "历史列表",
-    "Publish": "发布"
+    "Tooltip": {
+        "Model": "模型",
+        "Campaign": "活动",
+        "Prompt": "提示词",
+        "Quality": "品质",
+        "Ratio": "比例"
+    }
 }

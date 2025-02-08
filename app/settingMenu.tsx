@@ -5,7 +5,7 @@ import { getCurrentUser } from 'aws-amplify/auth';
 import { Flex, Menu, Image } from 'antd';
 import type { MenuProps } from 'antd';
 import Sider from 'antd/es/layout/Sider';
-import { HomeOutlined, RollbackOutlined, SmileOutlined,UserOutlined, TeamOutlined, TagOutlined, ReadOutlined, CommentOutlined, SubnodeOutlined, SettingOutlined } from '@ant-design/icons';
+import { RobotOutlined, RollbackOutlined, SmileOutlined,UserOutlined, TeamOutlined, TagOutlined, ReadOutlined, CommentOutlined, SubnodeOutlined, SettingOutlined } from '@ant-design/icons';
 import i18next from './i18n';
 
 const SettingMenu: React.FC = () => {
@@ -21,10 +21,10 @@ const SettingMenu: React.FC = () => {
   ): MenuItem {
     const itemLabel = children || options?.disabled ? label : <Link href={key.toString()}>{label}</Link>;
     return { 
+      label: itemLabel, 
       key, 
       icon, 
       children, 
-      label: itemLabel, 
       type, 
       disabled: options?.disabled 
     } as MenuItem;
@@ -37,7 +37,8 @@ const SettingMenu: React.FC = () => {
       getItem(i18next.t('Setting:Metadata.CustomerAttributes'), '/metadata/customerAttributes', <Image src='/asset/icon/coming_soon.svg' height={24} width={24} />, undefined, undefined, { disabled: true }),
     ], 'group'),
     getItem(i18next.t('Setting:Menu.Configuration'), '/configuration', null, [
-      getItem(i18next.t('Setting:Billing.Billing'), '/billing', <Image src='/asset/icon/coming_soon.svg' height={24} width={24} />, undefined, undefined, { disabled: true }),
+      getItem('AI '+i18next.t('Setting:Menu.Configuration'), '/configuration/ai', <RobotOutlined />),
+      getItem(i18next.t('Setting:Billing.Billing'), '/configuration/billing', <Image src='/asset/icon/coming_soon.svg' height={24} width={24} />, undefined, undefined, { disabled: true }),
       ], 'group'),
   ];  
 

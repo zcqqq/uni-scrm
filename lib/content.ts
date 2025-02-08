@@ -80,7 +80,7 @@ export const contentBackend = {
     }
   },
 
-  postContentPublishImageTiktok: async (contentPublishId: string) => {
+  postContentPublish: async (contentPublishId: string) => {
     try {
       const restOperation = post({
         apiName: 'myRestApi',

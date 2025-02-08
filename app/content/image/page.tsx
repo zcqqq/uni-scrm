@@ -107,7 +107,7 @@ const ContentImage: React.FC = () => {
             }
             const { data: createdContentPublish, errors: createdContentPublishErrors } = await client.models.ContentPublish.create(contentPublish, { authMode: 'userPool' });
             if (createdContentPublishErrors) console.error('createdContentPublishErrors:', JSON.stringify(createdContentPublishErrors, null, 2));
-            contentBackend.postContentPublishImageTiktok(createdContentPublish?.id || '');
+            contentBackend.postContentPublish(createdContentPublish?.id || '');
         }));
     };
 
@@ -131,15 +131,13 @@ const ContentImage: React.FC = () => {
                                 layout="horizontal"
                                 labelCol={{ flex: '80px' }}
                                 labelAlign="left"
-                                colon={true}
+                                colon={false}
                                 labelWrap={false}
                             >
                                 <Form.Item
                                     name="model"
                                     label={
-                                        <span>{i18n.t('Content:Model.Model')}&nbsp;
-                                            <Tooltip title="model"><QuestionCircleOutlined /></Tooltip>
-                                        </span>
+                                        <Tooltip title={i18n.t('Content:Tooltip.Model')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Model')}</span></Tooltip>
                                     }
                                 >
                                     <Select
@@ -156,24 +154,24 @@ const ContentImage: React.FC = () => {
                                     </Select>
                                 </Form.Item>
                                 <Form.Item name="campaign" label={
-                                    <span>活动&nbsp;<Tooltip title="campaign"><QuestionCircleOutlined /></Tooltip></span>
+                                    <Tooltip title={i18n.t('Content:Tooltip.Campaign')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Marketing.Campaign')}</span></Tooltip>
                                 } required><Input />
                                 </Form.Item>
                                 <Form.Item name="prompt" label={
-                                    <span>{i18n.t('Content:Model.Prompt')}&nbsp;<Tooltip title="prompt"><QuestionCircleOutlined /></Tooltip></span>
+                                    <Tooltip title={i18n.t('Content:Tooltip.Prompt')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Prompt')}</span></Tooltip>
                                 } required><Input.TextArea rows={4} />
                                 </Form.Item>
                                 <Form.Item name="quality" label={
-                                    <span>{i18n.t('Content:Model.Quality')}&nbsp;<Tooltip title="quality"><QuestionCircleOutlined /></Tooltip></span>
-                                }>
+                                        <Tooltip title={i18n.t('Content:Tooltip.Quality')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Quality')}</span></Tooltip>
+                                    }>
                                     <Radio.Group>
                                         <Radio.Button value="NORMAL">{i18n.t('Content:Model.Quality.Normal')}</Radio.Button>
                                         <Radio.Button value="HIGH">{i18n.t('Content:Model.Quality.High')}</Radio.Button>
                                     </Radio.Group>
                                 </Form.Item>
                                 <Form.Item name="ratio" label={
-                                    <span>{i18n.t('Content:Model.Ratio')}&nbsp;<Tooltip title="ratio"><QuestionCircleOutlined /></Tooltip></span>
-                                }>
+                                        <Tooltip title={i18n.t('Content:Tooltip.Ratio')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Ratio')}</span></Tooltip>
+                                    }>
                                     <Select>
                                         <Select.Option value="Square">{i18n.t('Content:Model.Ratio.Square')}</Select.Option>
                                         <Select.Option value="Landscape">{i18n.t('Content:Model.Ratio.Landscape')}</Select.Option>
