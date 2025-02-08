@@ -42,16 +42,23 @@ export const postContent = async (event: APIGatewayProxyEvent): Promise<APIGatew
     });
 
     const body = JSON.parse(event.body);
+    const model = body.model;
     const prompt = body.prompt;
+    let replicateOutput;
 
-    const replicateOutput = {
-        output: [
-            "https://replicate.delivery/xezq/Jy1MmEkOetzSVqiSvndY1uLNKUfR7Wz9iOjifSJNefROQIdgC/out-0.webp"
-        ]
-    };
+    if (model === 'black-forest-labs/flux-schnell') {
+        replicateOutput = {
+            output: [
+                "https://replicate.delivery/xezq/Jy1MmEkOetzSVqiSvndY1uLNKUfR7Wz9iOjifSJNefROQIdgC/out-0.webp"
+            ]
+        };
+    }
 
     // Grab the image URL
-    const imageUrl = replicateOutput.output[0];
+    const imageUrl = replicateOutput?.output[0];
+    if (!imageUrl) {
+        throw new Error('No image URL returned from Replicate');
+    }
 
     try {
         // Download the image
@@ -62,7 +69,7 @@ export const postContent = async (event: APIGatewayProxyEvent): Promise<APIGatew
         const imageBuffer = Buffer.from(await response.arrayBuffer());
 
         // Upload to S3
-        const s3Key = `public/${prompt}.webp`;
+        const s3Key = `image/${cognitoIdentityId}/${body.content_content}.webp`;
 
         // First upload the file
         await s3Client.send(new PutObjectCommand({
@@ -79,7 +86,7 @@ export const postContent = async (event: APIGatewayProxyEvent): Promise<APIGatew
             Body: imageBuffer,
             ContentType: "image/webp",
             Metadata: {
-                content_id: "content_id"
+                content_id: body.content_id
             },
         }));
 

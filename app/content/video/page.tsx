@@ -49,7 +49,7 @@ const ContentVideo: React.FC = () => {
 
     const [form] = Form.useForm();
     const handleSubmit = (values: any) => {
-        contentBackend.postContentVideo(values);
+        contentBackend.postContentVideo(values, '', '');
         setIsSubmitted(true);
     };
 

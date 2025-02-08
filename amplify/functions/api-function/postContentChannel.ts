@@ -9,6 +9,7 @@ import axios from 'axios';
 export const postContentChannel = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const client = generateClient<Schema>();
     const { contentId, channelId } = event.pathParameters || {};
+    const cognitoIdentityId = event.requestContext.identity.cognitoIdentityId;
 
     //get Channel and Content from database
     const { data: channels } = await client.models.Channel.list({
@@ -34,7 +35,7 @@ export const postContentChannel = async (event: APIGatewayProxyEvent): Promise<A
                 "source": "PULL_FROM_URL",
                 "photo_cover_index": 0,
                 "photo_images": [
-                    "https://file.uni-scrm.com/" + contents[0].content_content
+                    "https://file.uni-scrm.com/image/" + cognitoIdentityId + "/" + contents[0].content_content + ".webp"
                 ]
             }
         };
@@ -46,7 +47,7 @@ export const postContentChannel = async (event: APIGatewayProxyEvent): Promise<A
                 'Authorization': 'Bearer ' + channels[0].access_token,
                 'Content-Type': 'application/json; charset=UTF-8'
             },
-            data: postData
+            data: JSON.stringify(postData)
         };
     }
 

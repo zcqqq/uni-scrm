@@ -21,7 +21,7 @@ interface contentChannelParams {
 }
 
 export const contentBackend = {
-  postContentImage: async (params: contentParams) => {
+  postContentImage: async (params: contentParams, content_id: string, content_content: string) => {
 
     try {
       let requestBody;
@@ -35,6 +35,8 @@ export const contentBackend = {
         const settings = qualitySettings[params.quality as QualityType] || qualitySettings['NORMAL'];
 
         requestBody = {
+          content_id: content_id,
+          content_content: content_content,
           model: params.model,
           prompt: params.prompt,
           ...settings
@@ -45,7 +47,7 @@ export const contentBackend = {
         apiName: 'myRestApi',
         path: 'content',
         options: {
-          body: JSON.stringify(requestBody),
+          body: requestBody,
           headers: {
             'Content-Type': 'application/json'
           }
@@ -61,14 +63,16 @@ export const contentBackend = {
       console.log('POST call failed: ', JSON.parse(error.response.body));
     }
   },
-  postContentVideo: async (params: contentParams) => {
+  postContentVideo: async (params: contentParams, content_id: string, content_content: string) => {
     try {
       const restOperation = post({
         apiName: 'myRestApi',
         path: 'content',
         options: {
           body: {
-            message: params.prompt,
+            content_id: content_id,
+            model: params.model,
+            prompt: params.prompt,
           }
         }
       });
@@ -94,7 +98,7 @@ export const contentBackend = {
         apiName: 'myRestApi',
         path: `content/${params.content_id}/channel/${params.channel_id}`,
         options: {
-          body: JSON.stringify(requestBody),
+          body: requestBody,
           headers: {
             'Content-Type': 'application/json'
           }

@@ -10,6 +10,8 @@ import { CheckOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import Index from '../../index';
 import i18n from '../../i18n';
 import { contentBackend } from '../../../lib/content';
+import { fetchAuthSession } from 'aws-amplify/auth';
+
 
 
 const client = generateClient<Schema>();
@@ -24,10 +26,17 @@ const ContentImage: React.FC = () => {
     const [contentChannels, setContentChannels] = useState<ContentChannel[]>([]);
     const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [entityId, setEntityId] = useState<string>('');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                fetchAuthSession().then((info) => {
+                    const cognitoIdentityId = info.identityId;
+                    console.log('cognitoIdentityId:', cognitoIdentityId);
+                    setEntityId(cognitoIdentityId || '');
+                });
+
                 // Fetch channels
                 const { data: channels, errors: listChannelsErrors } = await client.models.Channel.list({
                     filter: { is_deleted: { eq: false } },
@@ -75,11 +84,16 @@ const ContentImage: React.FC = () => {
             content_prompt: values.prompt,
             content_quality: values.quality,
             content_ratio: values.ratio,
+            content_content: Math.random().toString(36).substring(2, 15),
         }
 
         const { data: createdContent, errors: createdContentErrors } = await client.models.Content.create(content, { authMode: 'userPool' });
         if (createdContentErrors) console.error('createdContentErrors:', JSON.stringify(createdContentErrors, null, 2));
-        contentBackend.postContentImage(values);
+        if (!createdContent?.id || !createdContent.content_content) {
+            console.error('Failed to create content: no ID or content_content returned');
+            return;
+        }
+        contentBackend.postContentImage(values, createdContent.id, createdContent.content_content);
         setIsSubmitted(true);
     };
     const handleRegenerate = () => {
@@ -112,8 +126,7 @@ const ContentImage: React.FC = () => {
     return (
         <Layout>
             <Index />
-            <Layout>
-                <Header></Header>
+            <Layout style={{ marginLeft: '200px', height: '100vh' }}>
                 <Content>
                     <Flex gap="large">
                         <div style={{ flex: 1 }}>
@@ -193,32 +206,57 @@ const ContentImage: React.FC = () => {
                             </Form>
                         </div>
 
-                        <div style={{ flex: 2 }}>
-                            {i18n.t('Content:Current')}{i18n.t('Content:File.Image')}
-                            <Image src={`https://file.uni-scrm.com/${selectedContent?.content_content}`} />
-                            <Input.TextArea rows={4} placeholder='相关文案' />
-                            <Flex justify="center">
-                                <Button type="primary" size="large" onClick={handlePublish} style={{ marginTop: '24px' }}>
+                        <div style={{ flex: 2, height: '100vh', display: 'flex', flexDirection: 'column' }}>
+                            {/* Header text */}
+                            <div style={{ padding: '16px', textAlign: 'center' }}>
+                                {i18n.t('Content:Current')}{i18n.t('Content:File.Image')}
+                            </div>
+                            
+                            {/* Image preview area */}
+                            <div
+                                style={{
+                                    flex: 1,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    overflow: 'hidden',
+                                }}
+                            >
+                                <Image
+                                    src={`https://file.uni-scrm.com/image/${entityId}/${selectedContent?.content_content}.webp`}
+                                    style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }}
+                                />
+                            </div>
+                            
+                            {/* Input text area */}
+                            <div style={{ padding: '16px' }}>
+                                <Input.TextArea rows={4} placeholder='相关文案' />
+                            </div>
+                            
+                            {/* Publish button */}
+                            <div style={{ padding: '16px', display: 'flex', justifyContent: 'center' }}>
+                                <Button type="primary" size="large" onClick={handlePublish}>
                                     {i18n.t('Content:Publish')}
                                 </Button>
-                            </Flex>
-                            <div style={{ marginTop: '4px' }}></div>
-                            <Checkbox.Group value={selectedChannels}
-                                onChange={setSelectedChannels}
-                            >
-                                {channels.map((channel) => (
-                                    <Checkbox key={channel.id} value={channel.id}>
-                                        {channel.channel_type}&nbsp;{channel.channel_name}
-                                    </Checkbox>
-                                ))}
-                            </Checkbox.Group>
+                            </div>
+                            
+                            {/* Channel selection */}
+                            <div style={{ padding: '8px 16px' }}>
+                                <Checkbox.Group value={selectedChannels} onChange={setSelectedChannels}>
+                                    {channels.map((channel) => (
+                                        <Checkbox key={channel.id} value={channel.id}>
+                                            {channel.channel_type}&nbsp;{channel.channel_name}
+                                        </Checkbox>
+                                    ))}
+                                </Checkbox.Group>
+                            </div>
                         </div>
 
                         <div style={{ flex: 1 }}>
                             {i18n.t('Content:File.Image')}{i18n.t('Content:HistoryList')}
                             {contents.map((content, index) => (
                                 <div key={index}>
-                                    <Image src={`https://file.uni-scrm.com/${content.content_content}`} />
+                                    <Image src={`https://file.uni-scrm.com/image/${entityId}/${content.content_content}.webp`} />
                                 </div>
                             ))}
                         </div>
