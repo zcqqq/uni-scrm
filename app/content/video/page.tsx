@@ -5,7 +5,7 @@ import { list, ListPaginateWithPathOutput } from 'aws-amplify/storage';
 import { generateClient } from 'aws-amplify/data';
 import { type Schema } from '@/amplify/data/resource';
 import React, { useState, useEffect } from 'react';
-import { Radio, Button, Input, Form, Flex, Tooltip, Layout, Checkbox, List, Select } from 'antd';
+import { Radio, Button, Input, Form, Flex, Tooltip, Layout, Checkbox, List, Select, Switch } from 'antd';
 import { CheckOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import Index from '../../index';
 import i18n from '../../i18n';
@@ -14,7 +14,7 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 import { Player } from 'video-react';
 import 'video-react/dist/video-react.css';
 import { FileUploader } from '@aws-amplify/ui-react-storage';
-
+import { post } from 'aws-amplify/api';
 
 
 const client = generateClient<Schema>();
@@ -70,24 +70,48 @@ const ContentVideo: React.FC = () => {
 
     const [form] = Form.useForm();
     const handleGenerate = async (values: any) => {
+        setIsSubmitted(true);
         const content = {
             content_type: 'VIDEO' as const,
             content_campaign: values.campaign,
             content_model: values.model,
             content_prompt: values.prompt,
-            content_quality: values.quality,
-            content_ratio: values.ratio,
             content_content: Math.random().toString(36).substring(2, 15),
-        }
-
+            model_input: JSON.stringify({
+                start_image: values.startImage,
+                duration: parseInt(values.duration, 10),
+                flexibility: parseFloat(values.flexibility.toFixed(1)),
+            })};
+        // write data table
         const { data: createdContent, errors: createdContentErrors } = await client.models.Content.create(content, { authMode: 'userPool' });
         if (createdContentErrors) console.error('createdContentErrors:', JSON.stringify(createdContentErrors, null, 2));
         if (!createdContent?.id || !createdContent.content_content) {
             console.error('Failed to create content: no ID or content_content returned');
             return;
         }
-        contentBackend.postContentVideo(values, createdContent.id, createdContent.content_content);
-        setIsSubmitted(true);
+
+        try {
+            // call API
+            const restOperation = post({
+                apiName: 'myRestApi',
+                path: 'content',
+                options: {
+                    body: content,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
+            });
+        
+            const { body } = await restOperation.response;
+            const response = await body.json();
+        
+            console.log('POST call succeeded');
+            console.log(response);
+        } catch (error) {
+            console.error('Network error during POST request:', error);
+            // Optionally, you might want to handle retries or notify the user.
+        }
     };
     const handleRegenerate = () => {
         console.log('handleReset called');
@@ -119,7 +143,7 @@ const ContentVideo: React.FC = () => {
             <Index />
             <Layout style={{ marginLeft: '200px', height: '100vh' }}>
                 <Content>
-                    <Flex gap="large">
+                    <Flex>
                         <div style={{ flex: 1 }}>
                             <Form
                                 form={form}
@@ -129,6 +153,8 @@ const ContentVideo: React.FC = () => {
                                     model: "kwaivgi/kling-v1.6-standard",
                                     quality: "NORMAL",
                                     ratio: "Square",
+                                    duration: 5,
+                                    flexibility: 0.5,
                                 }}
                                 style={{ maxWidth: '500px', margin: '20px' }}
                                 layout="horizontal"
@@ -163,33 +189,32 @@ const ContentVideo: React.FC = () => {
                                     <Tooltip title={i18n.t('Content:Tooltip.Prompt')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Prompt')}</span></Tooltip>
                                 } required><Input.TextArea rows={4} />
                                 </Form.Item>
-                                <span style={{ whiteSpace: 'normal'}}>Start Image</span>
-                                <Form.Item 
-                                    name="startImage"
-                                >
-                                    <FileUploader
-                                        acceptedFileTypes={['image/*']}
-                                        path="startImage/"
-                                        maxFileCount={1}
-                                        isResumable
-                                    />
-                                </Form.Item>
-                                <Form.Item name="quality" label={
-                                    <span>{i18n.t('Content:Model.Quality')}&nbsp;<Tooltip title="quality"><QuestionCircleOutlined /></Tooltip></span>
-                                }>
-                                    <Radio.Group>
-                                        <Radio.Button value="NORMAL">{i18n.t('Content:Model.Quality.Normal')}</Radio.Button>
-                                        <Radio.Button value="HIGH">{i18n.t('Content:Model.Quality.High')}</Radio.Button>
+                                <Form.Item name="duration" label={
+                                    <Tooltip title={i18n.t('Content:Tooltip.Duration')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Duration')}</span></Tooltip>
+                                }><Radio.Group><Radio.Button value={5}>5 Sec</Radio.Button>
+                                        <Radio.Button value={10}>10 Sec</Radio.Button>
                                     </Radio.Group>
                                 </Form.Item>
-                                <Form.Item name="ratio" label={
-                                    <span>{i18n.t('Content:Model.Ratio')}&nbsp;<Tooltip title="ratio"><QuestionCircleOutlined /></Tooltip></span>
-                                }>
-                                    <Select>
-                                        <Select.Option value="Square">{i18n.t('Content:Model.Ratio.Square')}</Select.Option>
-                                        <Select.Option value="Landscape">{i18n.t('Content:Model.Ratio.Landscape')}</Select.Option>
-                                        <Select.Option value="Portrait">{i18n.t('Content:Model.Ratio.Portrait')}</Select.Option>
-                                    </Select>
+                                <Form.Item name="flexibility" label={
+                                    <Tooltip title={i18n.t('Content:Tooltip.Flexibility')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Flexibility')}</span></Tooltip>
+                                }><Radio.Group><Radio.Button value={0.5}>{i18n.t('Content:Model.Flexibility.Creative')}</Radio.Button>
+                                        <Radio.Button value={1.0}>{i18n.t('Content:Model.Flexibility.Strict')}</Radio.Button>
+                                    </Radio.Group>
+                                </Form.Item>
+                                <span style={{ whiteSpace: 'normal' }}>Start Image</span>
+                                <Form.Item
+                                    name="startImage"
+                                    getValueFromEvent={(result: any) => result?.key}
+                                >
+                                    <div style={{ width: '300px', overflow: 'hidden' }}>
+                                        <FileUploader
+                                            acceptedFileTypes={['image/*']}
+                                            path={`imageprompt/${entityId}/`}
+                                            maxFileCount={1}
+                                            isResumable
+                                            onUploadSuccess={(result: any) => result.key}
+                                        />
+                                    </div>
                                 </Form.Item>
                                 <Form.Item style={{ marginTop: '24px', textAlign: 'center' }}>
                                     <Button

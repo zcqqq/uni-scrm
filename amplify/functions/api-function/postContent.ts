@@ -42,6 +42,7 @@ export const postContent = async (event: APIGatewayProxyEvent): Promise<APIGatew
     });
 
     const body = JSON.parse(event.body);
+    const content_type = body.content_type;
     const model = body.model;
     const prompt = body.prompt;
     let replicateOutput;
@@ -53,38 +54,45 @@ export const postContent = async (event: APIGatewayProxyEvent): Promise<APIGatew
             ]
         };
     }
+    if (model === "kwaivgi/kling-v1.6-standard") {
+        replicateOutput = {
+            output: [
+                "https://replicate.delivery/czjl/xFIwsxPXTtpCHJw2WqLH3gqACg3csLVVdKtbLf1heBzXiUJUA/tmp35xuh600.mp4"
+            ]
+        };
+    }
 
-    // Grab the image URL
-    const imageUrl = replicateOutput?.output[0];
-    if (!imageUrl) {
+    // Grab the file URL
+    const fileUrl = replicateOutput?.output[0];
+    if (!fileUrl) {
         throw new Error('No image URL returned from Replicate');
     }
 
     try {
         // Download the image
-        const response = await fetch(imageUrl);
+        const response = await fetch(fileUrl);
         if (!response.ok) {
-            throw new Error(`Failed to fetch image: ${response.statusText}`);
+            throw new Error(`Failed to fetch file: ${response.statusText}`);
         }
-        const imageBuffer = Buffer.from(await response.arrayBuffer());
+        const fileBuffer = Buffer.from(await response.arrayBuffer());
 
         // Upload to S3
-        const s3Key = `image/${cognitoIdentityId}/${body.content_content}.webp`;
+        let s3Key;
+        let s3ContentType;
+        if (content_type === 'IMAGE') {
+            s3Key = `image/${cognitoIdentityId}/${body.content_content}.webp`;
+            s3ContentType = "image/webp";
+        } else if (content_type === 'VIDEO') {
+            s3Key = `video/${cognitoIdentityId}/${body.content_content}.mp4`;
+            s3ContentType = "video/mp4";
+        }
 
-        // First upload the file
+        // Upload the file
         await s3Client.send(new PutObjectCommand({
             Bucket: 'file.uni-scrm.com',
             Key: s3Key,
-            Body: imageBuffer,
-            ContentType: "image/webp",
-        }));
-
-
-        await s3Client.send(new PutObjectCommand({
-            Bucket: 'file.uni-scrm.com',
-            Key: s3Key,
-            Body: imageBuffer,
-            ContentType: "image/webp",
+            Body: fileBuffer,
+            ContentType: s3ContentType,
             Metadata: {
                 content_id: body.content_id
             },

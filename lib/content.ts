@@ -56,29 +56,6 @@ export const contentBackend = {
       console.log('POST call failed: ', JSON.parse(error.response.body));
     }
   },
-  postContentVideo: async (params: contentParams, content_id: string, content_content: string) => {
-    try {
-      const restOperation = post({
-        apiName: 'myRestApi',
-        path: 'content',
-        options: {
-          body: {
-            content_id: content_id,
-            model: params.model,
-            prompt: params.prompt,
-          }
-        }
-      });
-
-      const { body } = await restOperation.response;
-      const response = await body.json();
-
-      console.log('POST call succeeded');
-      console.log(response);
-    } catch (error: any) {
-      console.log('POST call failed: ', JSON.parse(error.response.body));
-    }
-  },
 
   postContentPublish: async (contentPublishId: string) => {
     try {

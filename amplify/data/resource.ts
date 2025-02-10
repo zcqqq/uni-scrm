@@ -63,6 +63,7 @@ const schema = a.schema({
     content_campaign: a.string(),
     content_model: a.string(),
     content_prompt: a.string(),
+    model_input: a.json(),
     content_quality: a.enum(['NORMAL','HIGH']),
     content_ratio: a.string(),
     content_width: a.integer(),
