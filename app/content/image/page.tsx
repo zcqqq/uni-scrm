@@ -11,6 +11,7 @@ import Index from '../../index';
 import i18n from '../../i18n';
 import { contentBackend } from '../../../lib/content';
 import { fetchAuthSession } from 'aws-amplify/auth';
+import { post } from 'aws-amplify/api';
 
 
 
@@ -20,6 +21,7 @@ type Content = Schema['Content']['type'];
 type ContentPublish = Schema['ContentPublish']['type'];
 const { Header, Content } = Layout;
 const ContentImage: React.FC = () => {
+    const [form] = Form.useForm();
     const [channels, setChannels] = useState<Channel[]>([]);
     const [contents, setContents] = useState<Content[]>([]);
     const [selectedContent, setSelectedContent] = useState<Content>();
@@ -65,8 +67,11 @@ const ContentImage: React.FC = () => {
         fetchData();
     }, []);
 
-    const [form] = Form.useForm();
     const handleGenerate = async (values: any) => {
+        setIsSubmitted(true);
+        let model_input;
+        if (values.quality === 'HIGH') { model_input = { go_fast: 'false', megapixels: '10', num_outputs: '4', output_quality: '100', num_inference_steps: '4' } }
+        else { model_input = { go_fast: 'true', megapixels: '1', num_outputs: '1', output_quality: '80', num_inference_steps: '1' } }
         const content = {
             content_type: 'IMAGE' as const,
             content_campaign: values.campaign,
@@ -75,16 +80,22 @@ const ContentImage: React.FC = () => {
             content_quality: values.quality,
             content_ratio: values.ratio,
             content_content: Math.random().toString(36).substring(2, 15),
+            model_input: model_input,
         }
-
+        //write data table
         const { data: createdContent, errors: createdContentErrors } = await client.models.Content.create(content, { authMode: 'userPool' });
         if (createdContentErrors) console.error('createdContentErrors:', JSON.stringify(createdContentErrors, null, 2));
-        if (!createdContent?.id || !createdContent.content_content) {
-            console.error('Failed to create content: no ID or content_content returned');
-            return;
+        if (!createdContent?.id || !createdContent.content_content) { console.error('Failed to create content: no ID or content_content returned'); return; }
+        try {// call API
+            const restOperation = post({
+                apiName: 'myRestApi', path: 'content',
+                options: { body: content, headers: { 'Content-Type': 'application/json' } }
+            });
+            const { body } = await restOperation.response;
+            const response = await body.json();
+        } catch (error) {
+            console.error('REST POST error:', error);
         }
-        contentBackend.postContentImage(values, createdContent.id, createdContent.content_content);
-        setIsSubmitted(true);
     };
     const handleRegenerate = () => {
         console.log('handleReset called');
@@ -95,11 +106,7 @@ const ContentImage: React.FC = () => {
     };
 
     const handlePublish = async () => {
-        if (!selectedContent?.id) {
-            console.error('No content selected');
-            return;
-        }
-
+        if (!selectedContent?.id) { console.error('No content selected'); return; }
         await Promise.all(selectedChannels.map(async channelId => {
             const contentPublish = {
                 content_id: selectedContent.id,
@@ -107,7 +114,17 @@ const ContentImage: React.FC = () => {
             }
             const { data: createdContentPublish, errors: createdContentPublishErrors } = await client.models.ContentPublish.create(contentPublish, { authMode: 'userPool' });
             if (createdContentPublishErrors) console.error('createdContentPublishErrors:', JSON.stringify(createdContentPublishErrors, null, 2));
-            contentBackend.postContentPublish(createdContentPublish?.id || '');
+            try {
+                const restOperation = post({
+                    apiName: 'myRestApi',
+                    path: `contentPublish/${createdContentPublish?.id}`,
+                    options: { headers: { 'Content-Type': 'application/json' } }
+                });
+                const { body } = await restOperation.response;
+                const response = await body.json();
+            } catch (error) {
+                console.log('REST POST error:', error);
+            }
         }));
     };
 
@@ -162,16 +179,16 @@ const ContentImage: React.FC = () => {
                                 } required><Input.TextArea rows={4} />
                                 </Form.Item>
                                 <Form.Item name="quality" label={
-                                        <Tooltip title={i18n.t('Content:Tooltip.Quality')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Quality')}</span></Tooltip>
-                                    }>
+                                    <Tooltip title={i18n.t('Content:Tooltip.Quality')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Quality')}</span></Tooltip>
+                                }>
                                     <Radio.Group>
                                         <Radio.Button value="NORMAL">{i18n.t('Content:Model.Quality.Normal')}</Radio.Button>
                                         <Radio.Button value="HIGH">{i18n.t('Content:Model.Quality.High')}</Radio.Button>
                                     </Radio.Group>
                                 </Form.Item>
                                 <Form.Item name="ratio" label={
-                                        <Tooltip title={i18n.t('Content:Tooltip.Ratio')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Ratio')}</span></Tooltip>
-                                    }>
+                                    <Tooltip title={i18n.t('Content:Tooltip.Ratio')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Ratio')}</span></Tooltip>
+                                }>
                                     <Select>
                                         <Select.Option value="Square">{i18n.t('Content:Model.Ratio.Square')}</Select.Option>
                                         <Select.Option value="Landscape">{i18n.t('Content:Model.Ratio.Landscape')}</Select.Option>

@@ -6,9 +6,8 @@ import React from 'react';
 import { useParams } from 'next/navigation';
 import Index from '../../../index';
 import { tiktokBackend } from './backend';
-import { channelBackend } from '../../../../lib/channel';
 import { type Schema } from '@/amplify/data/resource';
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { generateClient } from "aws-amplify/api"
 
 const client = generateClient<Schema>()
@@ -24,9 +23,9 @@ const TiktokChannel: React.FC = () => {
             if (id) {
                 setIsLoading(true);
                 try {
-                    const channelData = await channelBackend.getChannel(id as string);
-                    console.log('Fetched channel data:', channelData);
-                    setChannel(channelData);
+                    const { data: channel } = await client.models.Channel.get({ id: id as string });
+                    console.log('Fetched channel data:', channel);
+                    setChannel(channel);
                 } catch (error) {
                     console.error('Error fetching channel:', error);
                 } finally {

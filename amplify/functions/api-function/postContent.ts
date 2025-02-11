@@ -43,18 +43,23 @@ export const postContent = async (event: APIGatewayProxyEvent): Promise<APIGatew
 
     const body = JSON.parse(event.body);
     const content_type = body.content_type;
-    const model = body.model;
-    const prompt = body.prompt;
+    const content_model = body.content_model;
+    const content_prompt = body.content_prompt;
+    const model_input = JSON.parse(body.model_input);
+    console.log("model_input: " + model_input);
     let replicateOutput;
 
-    if (model === 'black-forest-labs/flux-schnell') {
+    if (content_model === 'black-forest-labs/flux-schnell') {
         replicateOutput = {
             output: [
                 "https://replicate.delivery/xezq/Jy1MmEkOetzSVqiSvndY1uLNKUfR7Wz9iOjifSJNefROQIdgC/out-0.webp"
             ]
         };
     }
-    if (model === "kwaivgi/kling-v1.6-standard") {
+    if (content_model === "kwaivgi/kling-v1.6-standard") {
+        console.log("start_image: " + model_input.start_image);
+        console.log("duration: " + model_input.duration);
+        console.log("flexibility: " + model_input.flexibility);
         replicateOutput = {
             output: [
                 "https://replicate.delivery/czjl/xFIwsxPXTtpCHJw2WqLH3gqACg3csLVVdKtbLf1heBzXiUJUA/tmp35xuh600.mp4"
@@ -65,7 +70,7 @@ export const postContent = async (event: APIGatewayProxyEvent): Promise<APIGatew
     // Grab the file URL
     const fileUrl = replicateOutput?.output[0];
     if (!fileUrl) {
-        throw new Error('No image URL returned from Replicate');
+        throw new Error('No file URL returned from Replicate');
     }
 
     try {

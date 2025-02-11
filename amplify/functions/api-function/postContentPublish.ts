@@ -71,7 +71,7 @@ export const postContentPublish = async (event: APIGatewayProxyEvent): Promise<A
             },
             source_info: {
                 "source": "PULL_FROM_URL",
-                "video_url":"https://file.uni-scrm.com/video/" + cognitoIdentityId + "/" + content?.content_content + ".webp"
+                "video_url":"https://file.uni-scrm.com/video/" + cognitoIdentityId + "/" + content?.content_content + ".mp4"
             }
         };
         config = {

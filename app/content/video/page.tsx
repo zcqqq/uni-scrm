@@ -23,6 +23,7 @@ type Content = Schema['Content']['type'];
 type ContentPublish = Schema['ContentPublish']['type'];
 const { Header, Content } = Layout;
 const ContentVideo: React.FC = () => {
+    const [form] = Form.useForm();
     const [channels, setChannels] = useState<Channel[]>([]);
     const [contents, setContents] = useState<Content[]>([]);
     const [selectedContent, setSelectedContent] = useState<Content>();
@@ -68,7 +69,6 @@ const ContentVideo: React.FC = () => {
         fetchData();
     }, []);
 
-    const [form] = Form.useForm();
     const handleGenerate = async (values: any) => {
         setIsSubmitted(true);
         const content = {
@@ -81,38 +81,24 @@ const ContentVideo: React.FC = () => {
                 start_image: values.startImage,
                 duration: parseInt(values.duration, 10),
                 flexibility: parseFloat(values.flexibility.toFixed(1)),
-            })};
+            })
+        };
         // write data table
         const { data: createdContent, errors: createdContentErrors } = await client.models.Content.create(content, { authMode: 'userPool' });
         if (createdContentErrors) console.error('createdContentErrors:', JSON.stringify(createdContentErrors, null, 2));
-        if (!createdContent?.id || !createdContent.content_content) {
-            console.error('Failed to create content: no ID or content_content returned');
-            return;
-        }
-
-        try {
-            // call API
+        if (!createdContent?.id || !createdContent.content_content) { console.error('Failed to create content: no ID or content_content returned'); return; }
+        try {// call API
             const restOperation = post({
-                apiName: 'myRestApi',
-                path: 'content',
-                options: {
-                    body: content,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
+                apiName: 'myRestApi', path: 'content',
+                options: { body: content, headers: { 'Content-Type': 'application/json' } }
             });
-        
             const { body } = await restOperation.response;
             const response = await body.json();
-        
-            console.log('POST call succeeded');
-            console.log(response);
         } catch (error) {
-            console.error('Network error during POST request:', error);
-            // Optionally, you might want to handle retries or notify the user.
+            console.error('REST POST error:', error);
         }
     };
+
     const handleRegenerate = () => {
         console.log('handleReset called');
         console.log('isSubmitted before:', isSubmitted);
@@ -122,11 +108,7 @@ const ContentVideo: React.FC = () => {
     };
 
     const handlePublish = async () => {
-        if (!selectedContent?.id) {
-            console.error('No content selected');
-            return;
-        }
-
+        if (!selectedContent?.id) { console.error('No content selected'); return; }
         await Promise.all(selectedChannels.map(async channelId => {
             const contentPublish = {
                 content_id: selectedContent.id,
@@ -134,7 +116,17 @@ const ContentVideo: React.FC = () => {
             }
             const { data: createdContentPublish, errors: createdContentPublishErrors } = await client.models.ContentPublish.create(contentPublish, { authMode: 'userPool' });
             if (createdContentPublishErrors) console.error('createdContentPublishErrors:', JSON.stringify(createdContentPublishErrors, null, 2));
-            contentBackend.postContentPublish(createdContentPublish?.id || '');
+            try {
+                const restOperation = post({
+                    apiName: 'myRestApi',
+                    path: `contentPublish/${createdContentPublish?.id}`,
+                    options: { headers: { 'Content-Type': 'application/json' } }
+                });
+                const { body } = await restOperation.response;
+                const response = await body.json();
+            } catch (error) {
+                console.log('REST POST error:', error);
+            }
         }));
     };
 
@@ -231,12 +223,7 @@ const ContentVideo: React.FC = () => {
                         </div>
 
                         <div style={{ flex: 2, height: '100vh', display: 'flex', flexDirection: 'column' }}>
-                            {/* Header text */}
-                            <div style={{ padding: '16px', textAlign: 'center' }}>
-                                {i18n.t('Content:Current')}{i18n.t('Content:File.Video')}
-                            </div>
-
-                            {/* Video preview area */}
+                            <div style={{ padding: '16px', textAlign: 'center' }}>{i18n.t('Content:Current')}{i18n.t('Content:File.Video')}</div>
                             <div
                                 style={{
                                     flex: 1,
@@ -246,9 +233,8 @@ const ContentVideo: React.FC = () => {
                                     overflow: 'hidden',
                                 }}
                             >
-                                <Player>
-                                    <source src={`https://file.uni-scrm.com/video/${entityId}/${selectedContent?.content_content}.mp4`} />
-                                </Player>                            </div>
+                                <Player><source src={`https://file.uni-scrm.com/video/${entityId}/${selectedContent?.content_content}.mp4`} /></Player>
+                            </div>
 
                             {/* Input text area */}
                             <div style={{ padding: '16px' }}>
@@ -278,9 +264,7 @@ const ContentVideo: React.FC = () => {
                             {i18n.t('Content:File.Video')}{i18n.t('Content:HistoryList')}
                             {contents.map((content, index) => (
                                 <div key={index}>
-                                    <Player>
-                                        <source src={`https://file.uni-scrm.com/video/${entityId}/${content.content_content}.mp4`} />
-                                    </Player>
+                                    <Player><source src={`https://file.uni-scrm.com/video/${entityId}/${content.content_content}.mp4`} /></Player>
                                 </div>
                             ))}
                         </div>

@@ -10,7 +10,7 @@ import { generateClient } from 'aws-amplify/data';
 import { FileUploader } from '@aws-amplify/ui-react-storage';
 import { uploadData } from 'aws-amplify/storage';
 import { getCurrentUser } from 'aws-amplify/auth';
-import { channelBackend } from '../../lib/channel';
+import { type Schema } from '@/amplify/data/resource';
 import Link from 'next/link';
 
 const { Header } = Layout;
@@ -28,12 +28,15 @@ const imageStyle = {
   padding: '20px'
 };
 
+const client = generateClient<Schema>();
 const Channel: React.FC = () => {
   const [channels, setChannels] = useState<any[]>([]);
 
   useEffect(() => {
     const getChannels = async () => {
-      const data = await channelBackend.listChannels();
+      const {data} = await client.models.Channel.list({
+        filter: { is_deleted: { eq: false } }
+    });
       setChannels(data);
     };
 

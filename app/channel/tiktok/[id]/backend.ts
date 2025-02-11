@@ -1,12 +1,12 @@
 import { generateClient } from 'aws-amplify/data';
 import { type Schema } from '@/amplify/data/resource';
 import { AxiosResponse } from 'axios';
-import { channelBackend } from '../../../../lib/channel';
 
 const client = generateClient<Schema>();
 export const tiktokBackend = {
     refreshToken: async (id: string) => {
-        const channelData = await channelBackend.getChannel(id as string);
+        const { data: channel } = await client.models.Channel.get({ id });
+
 
         //Postman start
         const axios = require('axios');
@@ -15,7 +15,7 @@ export const tiktokBackend = {
             'client_key': 'sbawqxclmj4epo0txj',
             'client_secret': 'otJCWnI0je36MF4BpxhNhERYV1xRCu7q',
             'grant_type': 'refresh_token',
-            'refresh_token': channelData?.refresh_token
+            'refresh_token': channel?.refresh_token
         });
 
         let config = {
@@ -29,10 +29,10 @@ export const tiktokBackend = {
         };
 
         const response = await axios.request(config);
-        if (!channelData) return;
+        if (!channel) return;
         
         const { data: updatedChannel, errors } = await client.models.Channel.update({
-            id: channelData.id,
+            id: channel.id,
             access_token: response.data.access_token
         });
         
