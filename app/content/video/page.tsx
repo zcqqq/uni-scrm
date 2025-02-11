@@ -9,7 +9,6 @@ import { Radio, Button, Input, Form, Flex, Tooltip, Layout, Checkbox, List, Sele
 import { CheckOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import Index from '../../index';
 import i18n from '../../i18n';
-import { contentBackend } from '../../../lib/content';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { Player } from 'video-react';
 import 'video-react/dist/video-react.css';

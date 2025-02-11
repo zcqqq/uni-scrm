@@ -9,7 +9,6 @@ import { Radio, Button, Input, Image, Form, Flex, Tooltip, Layout, Checkbox, Lis
 import { CheckOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import Index from '../../index';
 import i18n from '../../i18n';
-import { contentBackend } from '../../../lib/content';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { post } from 'aws-amplify/api';
 
