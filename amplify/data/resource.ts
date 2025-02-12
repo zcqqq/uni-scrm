@@ -60,17 +60,21 @@ const schema = a.schema({
     content_type: a.enum(['IMAGE','TEXT','VIDEO']),
     content_title: a.string(),
     content_content: a.string(), //文件链接
+    folder_id: a.string(), //传入供callback存文件用
+    content_files: a.string().array(), //多个图片
     content_campaign: a.string(),
     content_model: a.string(),
     content_prompt: a.string(),
     model_input: a.json(),
+    generation_id: a.string(),
+    generation_status: a.string(),
     content_quality: a.enum(['NORMAL','HIGH']),
     content_ratio: a.string(),
     content_width: a.integer(),
     content_height: a.integer(),
 
     contentPublishs: a.hasMany('ContentPublish', 'content_id'),
-  }),
+  }).secondaryIndexes((index) => [index('generation_id')]),
   ContentPublish: a.model({
     group: a.string(),
     content_id: a.id().required(),

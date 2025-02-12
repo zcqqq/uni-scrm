@@ -63,7 +63,8 @@ const contentPath = myRestApi.root.addResource("content", {
     authorizationType: AuthorizationType.IAM,
   },
 });
-contentPath.addMethod("POST", lambdaIntegration);
+const contentIdPath = contentPath.addResource("{contentId}");
+contentIdPath.addMethod("POST", lambdaIntegration);
 
 const contentPublishPath = myRestApi.root.addResource("contentPublish", {
   defaultMethodOptions: {
@@ -90,9 +91,7 @@ const apiRestPolicy = new Policy(apiStack, "RestApiPolicy", {
     new PolicyStatement({
       actions: ["execute-api:Invoke"],
       resources: [
-        `${myRestApi.arnForExecuteApi("*", "/content", "dev")}`,
         `${myRestApi.arnForExecuteApi("*", "/content/*", "dev")}`,
-        `${myRestApi.arnForExecuteApi("*", "/contentPublish", "dev")}`,
         `${myRestApi.arnForExecuteApi("*", "/contentPublish/*", "dev")}`,
         `${myRestApi.arnForExecuteApi("*", "/cognito-auth-path", "dev")}`,
       ],

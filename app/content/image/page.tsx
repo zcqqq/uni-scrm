@@ -69,25 +69,23 @@ const ContentImage: React.FC = () => {
     const handleGenerate = async (values: any) => {
         setIsSubmitted(true);
         let model_input;
-        if (values.quality === 'HIGH') { model_input = { go_fast: 'false', megapixels: '10', num_outputs: '4', output_quality: '100', num_inference_steps: '4' } }
-        else { model_input = { go_fast: 'true', megapixels: '1', num_outputs: '1', output_quality: '80', num_inference_steps: '1' } }
+        if (values.quality === 'HIGH') { model_input = { prompt: values.prompt, go_fast: false, megapixels: '10', num_outputs: 4, aspect_ratio: values.ratio, output_quality: '100', num_inference_steps: '4' } }
+        else { model_input = { prompt: values.prompt, go_fast: true, megapixels: '1', num_outputs: 1, aspect_ratio: values.ratio, output_quality: '80', num_inference_steps: '1' } }
         const content = {
             content_type: 'IMAGE' as const,
             content_campaign: values.campaign,
             content_model: values.model,
             content_prompt: values.prompt,
-            content_quality: values.quality,
-            content_ratio: values.ratio,
-            content_content: Math.random().toString(36).substring(2, 15),
-            model_input: model_input,
+            model_input: JSON.stringify(model_input),
+            folder_id: entityId
         }
         //write data table
         const { data: createdContent, errors: createdContentErrors } = await client.models.Content.create(content, { authMode: 'userPool' });
         if (createdContentErrors) console.error('createdContentErrors:', JSON.stringify(createdContentErrors, null, 2));
-        if (!createdContent?.id || !createdContent.content_content) { console.error('Failed to create content: no ID or content_content returned'); return; }
+        if (!createdContent?.id) { console.error('Failed to create content'); return; }
         try {// call API
             const restOperation = post({
-                apiName: 'myRestApi', path: 'content',
+                apiName: 'myRestApi', path: `content/${createdContent.id}`,
                 options: { body: content, headers: { 'Content-Type': 'application/json' } }
             });
             const { body } = await restOperation.response;
@@ -189,9 +187,9 @@ const ContentImage: React.FC = () => {
                                     <Tooltip title={i18n.t('Content:Tooltip.Ratio')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Ratio')}</span></Tooltip>
                                 }>
                                     <Select>
-                                        <Select.Option value="Square">{i18n.t('Content:Model.Ratio.Square')}</Select.Option>
-                                        <Select.Option value="Landscape">{i18n.t('Content:Model.Ratio.Landscape')}</Select.Option>
-                                        <Select.Option value="Portrait">{i18n.t('Content:Model.Ratio.Portrait')}</Select.Option>
+                                        <Select.Option value="1:1">{i18n.t('Content:Model.Ratio.Square')}</Select.Option>
+                                        <Select.Option value="16:9">{i18n.t('Content:Model.Ratio.Landscape')}</Select.Option>
+                                        <Select.Option value="9:16">{i18n.t('Content:Model.Ratio.Portrait')}</Select.Option>
                                     </Select>
                                 </Form.Item>
                                 <Form.Item style={{ marginTop: '24px', textAlign: 'center' }}>

@@ -13,7 +13,7 @@ Amplify.configure(resourceConfig, libraryOptions as any);
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   console.log("event", event);
-  if(event.httpMethod === "POST" && event.path === "/content") {
+  if(event.httpMethod === "POST" && event.path.startsWith("/content")) {
     return postContent(event);
   } 
   else if(event.httpMethod === "POST" && event.path.startsWith("/contentPublish")) {
