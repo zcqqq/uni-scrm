@@ -1,7 +1,6 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
-import { weixinWork, tiktok,replicate } from "../functions/resource";
+import { weixinWork, tiktok } from "../functions/resource";
 import { postConfirmation } from "../auth/post-confirmation/resource";
-import { myApiFunction } from "../functions/api-function/resource";
 
 const schema = a.schema({
   //core
@@ -58,7 +57,6 @@ const schema = a.schema({
     tenant_id: a.string(),
     status_generate: a.string(),
     content_type: a.enum(['IMAGE','TEXT','VIDEO']),
-    content_title: a.string(),
     content_content: a.string(), //文件链接
     folder_id: a.string(), //传入供callback存文件用
     content_files: a.string().array(), //多个图片
@@ -81,6 +79,7 @@ const schema = a.schema({
     channel_id: a.id().required(),
     publish_id: a.string(),
     publish_status: a.string(),
+    publish_title: a.string(),
 
     content: a.belongsTo('Content', 'content_id'),
     channel: a.belongsTo('Channel', 'channel_id'),
@@ -137,7 +136,7 @@ const schema = a.schema({
     field_name: a.string(),
     field_type: a.string(),
   }),
-}).authorization(allow => [allow.owner(),allow.groupDefinedIn('group'),allow.publicApiKey(),allow.resource(myApiFunction),allow.resource(replicate),
+}).authorization(allow => [allow.owner(),allow.groupDefinedIn('group'),allow.publicApiKey(),
 allow.resource(tiktok), allow.resource(weixinWork), allow.resource(postConfirmation)]);
 
 export type Schema = ClientSchema<typeof schema>;

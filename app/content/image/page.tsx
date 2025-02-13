@@ -76,8 +76,8 @@ const ContentImage: React.FC = () => {
             content_campaign: values.campaign,
             content_model: values.model,
             content_prompt: values.prompt,
+            folder_id: entityId,
             model_input: JSON.stringify(model_input),
-            folder_id: entityId
         }
         //write data table
         const { data: createdContent, errors: createdContentErrors } = await client.models.Content.create(content, { authMode: 'userPool' });

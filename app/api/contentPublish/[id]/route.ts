@@ -21,7 +21,6 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
             post_mode: "DIRECT_POST",
             post_info: {
                 privacy_level: "SELF_ONLY",
-                title: content?.content_title,
                 brand_organic_toggle: true,
                 is_aigc: true
             },
@@ -47,7 +46,6 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
         postData = {
             post_info: {
                 privacy_level: "SELF_ONLY",
-                title: content?.content_title,
                 brand_organic_toggle: true,
                 is_aigc: true
             },

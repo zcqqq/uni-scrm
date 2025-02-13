@@ -75,8 +75,9 @@ const ContentVideo: React.FC = () => {
             content_campaign: values.campaign,
             content_model: values.model,
             content_prompt: values.prompt,
-            content_content: Math.random().toString(36).substring(2, 15),
+            folder_id: entityId,
             model_input: JSON.stringify({
+                prompt: values.prompt,
                 start_image: values.startImage,
                 duration: parseInt(values.duration, 10),
                 flexibility: parseFloat(values.flexibility.toFixed(1)),
@@ -85,17 +86,12 @@ const ContentVideo: React.FC = () => {
         // write data table
         const { data: createdContent, errors: createdContentErrors } = await client.models.Content.create(content, { authMode: 'userPool' });
         if (createdContentErrors) console.error('createdContentErrors:', JSON.stringify(createdContentErrors, null, 2));
-        if (!createdContent?.id || !createdContent.content_content) { console.error('Failed to create content: no ID or content_content returned'); return; }
-        try {// call API
-            const restOperation = post({
-                apiName: 'myRestApi', path: 'content',
-                options: { body: content, headers: { 'Content-Type': 'application/json' } }
-            });
-            const { body } = await restOperation.response;
-            const response = await body.json();
-        } catch (error) {
-            console.error('REST POST error:', error);
-        }
+        if (!createdContent?.id) { console.error('Failed to create content'); return; }
+        fetch(`/api/content/${createdContent.id}`, {
+            method: 'POST',
+            body: JSON.stringify(content),
+            headers: { 'Content-Type': 'application/json' }
+        });
     };
 
     const handleRegenerate = () => {
@@ -115,17 +111,10 @@ const ContentVideo: React.FC = () => {
             }
             const { data: createdContentPublish, errors: createdContentPublishErrors } = await client.models.ContentPublish.create(contentPublish, { authMode: 'userPool' });
             if (createdContentPublishErrors) console.error('createdContentPublishErrors:', JSON.stringify(createdContentPublishErrors, null, 2));
-            try {
-                const restOperation = post({
-                    apiName: 'myRestApi',
-                    path: `contentPublish/${createdContentPublish?.id}`,
-                    options: { headers: { 'Content-Type': 'application/json' } }
-                });
-                const { body } = await restOperation.response;
-                const response = await body.json();
-            } catch (error) {
-                console.log('REST POST error:', error);
-            }
+            fetch(`/api/contentPublish/${createdContentPublish?.id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
         }));
     };
 
@@ -232,7 +221,7 @@ const ContentVideo: React.FC = () => {
                                     overflow: 'hidden',
                                 }}
                             >
-                                <Player><source src={`https://file.uni-scrm.com/video/${entityId}/${selectedContent?.content_content}.mp4`} /></Player>
+                                <Player><source src={`https://file.uni-scrm.com/video/${entityId}/${selectedContent?.content_files?.[0]}.mp4`} /></Player>
                             </div>
 
                             {/* Input text area */}
@@ -263,7 +252,7 @@ const ContentVideo: React.FC = () => {
                             {i18n.t('Content:File.Video')}{i18n.t('Content:HistoryList')}
                             {contents.map((content, index) => (
                                 <div key={index}>
-                                    <Player><source src={`https://file.uni-scrm.com/video/${entityId}/${content.content_content}.mp4`} /></Player>
+                                    <Player><source src={`https://file.uni-scrm.com/video/${entityId}/${content.content_files?.[0]}.mp4`} /></Player>
                                 </div>
                             ))}
                         </div>

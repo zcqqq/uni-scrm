@@ -17,8 +17,9 @@ export async function POST(request: NextRequest) {
   const { data: updatedContent } = await cookiesClient.models.Content.update(updateContent);
 
   const s3Client = new S3Client({region: 'ap-east-1', maxAttempts: 3});
+  const outputs = Array.isArray(body.output) ? body.output : [body.output];
   const filenames = [];
-  for (const fileUrl of body.output) {
+  for (const fileUrl of outputs) {
     const url = fileUrl.toString();
     if (!url) throw new Error('No file URL returned from Replicate');
     const filename = Math.random().toString(36).substring(2, 15);

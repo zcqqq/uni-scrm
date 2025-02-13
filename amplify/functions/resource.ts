@@ -1,10 +1,5 @@
 import { defineFunction, secret } from '@aws-amplify/backend';
 
-export const replicate = defineFunction({
-  name: 'replicate',
-  entry: './replicate/index.ts'
-});
-
 export const weixinWork = defineFunction({
   name: 'weixinWork',
   entry: './weixinWork/index.ts'
