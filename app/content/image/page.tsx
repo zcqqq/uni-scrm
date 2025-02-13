@@ -69,8 +69,8 @@ const ContentImage: React.FC = () => {
     const handleGenerate = async (values: any) => {
         setIsSubmitted(true);
         let model_input;
-        if (values.quality === 'HIGH') { model_input = { prompt: values.prompt, go_fast: false, megapixels: '10', num_outputs: 4, aspect_ratio: values.ratio, output_quality: '100', num_inference_steps: '4' } }
-        else { model_input = { prompt: values.prompt, go_fast: true, megapixels: '1', num_outputs: 1, aspect_ratio: values.ratio, output_quality: '80', num_inference_steps: '1' } }
+        if (values.quality === 'HIGH') { model_input = { prompt: values.prompt, go_fast: false, megapixels: '10', num_outputs: 4, aspect_ratio: values.ratio, output_quality: 100, num_inference_steps: 4 } }
+        else { model_input = { prompt: values.prompt, go_fast: true, megapixels: '1', num_outputs: 1, aspect_ratio: values.ratio, output_quality: 80, num_inference_steps: 1 } }
         const content = {
             content_type: 'IMAGE' as const,
             content_campaign: values.campaign,
@@ -83,16 +83,11 @@ const ContentImage: React.FC = () => {
         const { data: createdContent, errors: createdContentErrors } = await client.models.Content.create(content, { authMode: 'userPool' });
         if (createdContentErrors) console.error('createdContentErrors:', JSON.stringify(createdContentErrors, null, 2));
         if (!createdContent?.id) { console.error('Failed to create content'); return; }
-        try {// call API
-            const restOperation = post({
-                apiName: 'myRestApi', path: `content/${createdContent.id}`,
-                options: { body: content, headers: { 'Content-Type': 'application/json' } }
-            });
-            const { body } = await restOperation.response;
-            const response = await body.json();
-        } catch (error) {
-            console.error('REST POST error:', error);
-        }
+        fetch(`/api/content/${createdContent.id}`, {
+            method: 'POST',
+            body: JSON.stringify(content),
+            headers: { 'Content-Type': 'application/json' }
+        });
     };
     const handleRegenerate = () => {
         console.log('handleReset called');
@@ -111,17 +106,10 @@ const ContentImage: React.FC = () => {
             }
             const { data: createdContentPublish, errors: createdContentPublishErrors } = await client.models.ContentPublish.create(contentPublish, { authMode: 'userPool' });
             if (createdContentPublishErrors) console.error('createdContentPublishErrors:', JSON.stringify(createdContentPublishErrors, null, 2));
-            try {
-                const restOperation = post({
-                    apiName: 'myRestApi',
-                    path: `contentPublish/${createdContentPublish?.id}`,
-                    options: { headers: { 'Content-Type': 'application/json' } }
-                });
-                const { body } = await restOperation.response;
-                const response = await body.json();
-            } catch (error) {
-                console.log('REST POST error:', error);
-            }
+            fetch(`/api/contentPublish/${createdContentPublish?.id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
         }));
     };
 
@@ -139,7 +127,7 @@ const ContentImage: React.FC = () => {
                                 initialValues={{
                                     model: "black-forest-labs/flux-schnell",
                                     quality: "NORMAL",
-                                    ratio: "Square",
+                                    ratio: "1:1",
                                 }}
                                 style={{ maxWidth: '500px', margin: '20px' }}
                                 layout="horizontal"
@@ -223,7 +211,7 @@ const ContentImage: React.FC = () => {
                                 }}
                             >
                                 <Image
-                                    src={`https://file.uni-scrm.com/image/${entityId}/${selectedContent?.content_content}.webp`}
+                                    src={`https://file.uni-scrm.com/image/${entityId}/${selectedContent?.content_files?.[0]}.webp`}
                                     style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }}
                                 />
                             </div>
@@ -256,7 +244,7 @@ const ContentImage: React.FC = () => {
                             {i18n.t('Content:File.Image')}{i18n.t('Content:HistoryList')}
                             {contents.map((content, index) => (
                                 <div key={index}>
-                                    <Image src={`https://file.uni-scrm.com/image/${entityId}/${content.content_content}.webp`} />
+                                    <Image src={`https://file.uni-scrm.com/image/${entityId}/${content.content_files?.[0]}.webp`} />
                                 </div>
                             ))}
                         </div>

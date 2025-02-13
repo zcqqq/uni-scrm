@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateClient } from 'aws-amplify/data';
-import { type Schema } from '../../../amplify/data/resource'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { cookiesClient } from "@/utils/amplify-utils";
 
