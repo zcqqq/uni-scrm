@@ -19,17 +19,16 @@ import { myApiFunction } from "./functions/api-function/resource";
 const backend = defineBackend({
   auth,
   data,
-  //storage,
+  //storage, //can't co-exist with own bucket
   myApiFunction,
   replicate,
   weixinWork,
   tiktok,
 });
 
-
+// own bucket essential for tiktok upload
 backend.addOutput({
   storage: {
-    aws_region: "ap-east-1",
     bucket_name: "file.uni-scrm.com"
   },
 });
