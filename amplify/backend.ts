@@ -29,7 +29,8 @@ const backend = defineBackend({
 // own bucket essential for tiktok upload
 backend.addOutput({
   storage: {
-    bucket_name: "file.uni-scrm.com"
+    bucket_name: "file.uni-scrm.com",
+    aws_region: "ap-east-1",
   },
 });
 
