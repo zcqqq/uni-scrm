@@ -4,7 +4,6 @@ import { cookiesClient } from "@/utils/amplify-utils";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  console.log(body);
     
   const { data: contents } = await cookiesClient.models.Content.listContentByGeneration_id({
     generation_id: body.id,
