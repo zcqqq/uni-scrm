@@ -12,7 +12,8 @@
     "Customer": "客户",
     "Group": "客户群",
     "Tag": "标签",
-    "Setting": "设置"
+    "Setting": "设置",
+    "SignOut": "登出"
   },
   "Form": {
     "Save": "保存"

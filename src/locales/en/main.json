@@ -12,7 +12,8 @@
     "Customer": "Customer",
     "Group": "Group",
     "Tag": "Tag",
-    "Setting": "Setting"
+    "Setting": "Setting",
+    "SignOut": "Sign Out"
   },
   "Form": {
     "Save": "Save"
