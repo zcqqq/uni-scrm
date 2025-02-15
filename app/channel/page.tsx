@@ -47,7 +47,7 @@ const Channel: React.FC = () => {
     `client_key=` + process.env.NEXT_PUBLIC_TIKTOK_CLIENT_KEY +
     `&response_type=code` +
     `&scope=user.info.basic,user.info.profile,user.info.stats,video.list,video.publish,video.upload` +
-    `&redirect_uri=` + process.env.NEXT_PUBLIC_CALLBACK + `/tiktok` +
+    `&redirect_uri=` + process.env.NEXT_PUBLIC_CALLBACK_HOST + `/callback/tiktok` +
     `&state=0`;
 
   return (
@@ -101,7 +101,7 @@ const Channel: React.FC = () => {
                           style={imageStyle}
                         />
                       }
-                      actions={[<SettingOutlined key="connectTiktok" onClick={() => window.open(tiktokAuthUrl, '_blank')} />]}
+                      actions={[<SettingOutlined key="connectTiktok" onClick={() => window.location.href = tiktokAuthUrl} />]}
                     >
                       <Meta title={i18n.t('Channel:TIKTOK.ChannelType')} style={{ textAlign: 'center' }} />
                     </Card>
