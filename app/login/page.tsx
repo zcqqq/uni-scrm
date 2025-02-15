@@ -2,7 +2,6 @@
 "use client";
 
 import { Authenticator } from "@aws-amplify/ui-react";
-import { AuthUser } from "aws-amplify/auth";
 import { redirect } from "next/navigation";
 import { I18n } from 'aws-amplify/utils';
 import { translations } from '@aws-amplify/ui-react';
@@ -25,7 +24,7 @@ I18n.putVocabularies({
   },
 });
 
-function Login({ user }: { user?: AuthUser }) {
+function Login() {
   return (
     <Authenticator
       initialState='signUp'
@@ -33,7 +32,7 @@ function Login({ user }: { user?: AuthUser }) {
     >
       {({ user }) => {
         if (user) {
-          redirect("/");
+          redirect("/channel");
         }
         return <div></div>;
       }}
