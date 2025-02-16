@@ -30,14 +30,26 @@ const ContentVideo: React.FC = () => {
     const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [entityId, setEntityId] = useState<string>('');
+    const [quotaVideoGeneration, setQuotaVideoGeneration] = useState(0);
+    const [usedVideoGeneration, setUsedVideoGeneration] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                //Fetch tenant quota
                 fetchAuthSession().then((info) => {
                     const cognitoIdentityId = info.identityId;
-                    console.log('cognitoIdentityId:', cognitoIdentityId);
+                    const userGroups = (info.tokens?.accessToken?.payload['cognito:groups'] as string[]) || [];
                     setEntityId(cognitoIdentityId || '');
+                                        if (userGroups.length > 0) {
+                        client.models.Tenant.get({id: userGroups[0]}).then(({ data: tenant, errors: getTenantErrors }) => {
+                            if (getTenantErrors) console.error('getTenantErrors:', JSON.stringify(getTenantErrors, null, 2));
+                            if (tenant) {
+                                setQuotaVideoGeneration(tenant.quota_video_generation || 0);
+                                setUsedVideoGeneration(tenant.used_video_generation || 0);
+                            }
+                        });
+                    }
                 });
 
                 // Fetch channels
@@ -206,6 +218,7 @@ const ContentVideo: React.FC = () => {
                                     >
                                         {isSubmitted ? i18n.t('Content:Model.Re-Generate') : i18n.t('Content:Model.Generate')}
                                     </Button>
+                                    &nbsp;{usedVideoGeneration}/{quotaVideoGeneration} used
                                 </Form.Item>
                             </Form>
                         </div>

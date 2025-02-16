@@ -23,7 +23,7 @@ const TiktokChannel: React.FC = () => {
             if (id) {
                 setIsLoading(true);
                 try {
-                    const { data: channel } = await client.models.Channel.get({ id: id as string });
+                    const { data: channel } = await client.models.Channel.get({ id: id as string }, { authMode: 'userPool' });
                     console.log('Fetched channel data:', channel);
                     setChannel(channel);
                 } catch (error) {

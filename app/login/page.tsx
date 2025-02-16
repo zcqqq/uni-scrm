@@ -30,7 +30,7 @@ function Login() {
       initialState='signUp'
       signUpAttributes={['nickname']}
     >
-      {({ user }) => {
+      {({ signOut, user }) => {
         if (user) {
           redirect("/channel");
         }

@@ -15,8 +15,10 @@ const schema = a.schema({
     group: a.string(),
     tenant_name: a.string(),
     corpid: a.string(),
+    quota_image_generation: a.integer(),
+    used_image_generation: a.integer(),
     quota_video_generation: a.integer(),
-    left_video_generation: a.integer(),
+    used_video_generation: a.integer(),
   }),
   User: a.model({
     is_deleted: a.boolean().default(false),
@@ -72,7 +74,8 @@ const schema = a.schema({
     content_height: a.integer(),
 
     contentPublishs: a.hasMany('ContentPublish', 'content_id'),
-  }).secondaryIndexes((index) => [index('generation_id')]),
+  }).authorization(allow => [allow.groupDefinedIn('group')])
+  .secondaryIndexes((index) => [index('generation_id')]),
   ContentPublish: a.model({
     group: a.string(),
     content_id: a.id().required(),

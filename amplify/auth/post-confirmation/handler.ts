@@ -19,7 +19,12 @@ const dataClient = generateClient<Schema>();
 export const handler: PostConfirmationTriggerHandler = async (event) => {
     //upsert Tenant in database
     const { data: tenants } = await dataClient.models.Tenant.list({
-        filter: { tenant_name: { eq: event.request.userAttributes.nickname } }
+        filter: {
+            or: [
+                { tenant_name: { eq: event.request.userAttributes.nickname } },
+                { tenant_name: { eq: event.request.userAttributes.email } }
+            ]
+        }
     });
     let tenant_id;
     if (tenants.length > 0) {
@@ -30,10 +35,22 @@ export const handler: PostConfirmationTriggerHandler = async (event) => {
         const { data: updatedTenant, errors } = await dataClient.models.Tenant.update(tenant);
         console.log('updatedTenant: ' + updatedTenant);
         tenant_id = updatedTenant?.id;
-    } else {
+    } else if (event.request.userAttributes.nickname) {
         const tenant = {
             is_deleted: false,
             tenant_name: event.request.userAttributes.nickname,
+            quota_image_generation: 10,
+            quota_video_generation: 1,
+        };
+        const { data: createdTenant, errors } = await dataClient.models.Tenant.create(tenant);
+        console.log('createdTenant: ' + createdTenant);
+        tenant_id = createdTenant?.id;
+    } else {
+        const tenant = {
+            is_deleted: false,
+            tenant_name: event.request.userAttributes.email,
+            quota_image_generation: 10,
+            quota_video_generation: 1,
         };
         const { data: createdTenant, errors } = await dataClient.models.Tenant.create(tenant);
         console.log('createdTenant: ' + createdTenant);

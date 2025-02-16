@@ -15,12 +15,14 @@ import { post } from 'aws-amplify/api';
 
 
 const client = generateClient<Schema>();
+type Tenant = Schema['Tenant']['type'];
 type Channel = Schema['Channel']['type'];
 type Content = Schema['Content']['type'];
 type ContentPublish = Schema['ContentPublish']['type'];
 const { Header, Content } = Layout;
 const ContentImage: React.FC = () => {
     const [form] = Form.useForm();
+    const [tenant, setTenant] = useState<Tenant>();
     const [channels, setChannels] = useState<Channel[]>([]);
     const [contents, setContents] = useState<Content[]>([]);
     const [selectedContent, setSelectedContent] = useState<Content>();
@@ -32,10 +34,19 @@ const ContentImage: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                //Fetch tenant quota
                 fetchAuthSession().then((info) => {
                     const cognitoIdentityId = info.identityId;
-                    console.log('cognitoIdentityId:', cognitoIdentityId);
+                    const userGroups = (info.tokens?.accessToken?.payload['cognito:groups'] as string[]) || [];
                     setEntityId(cognitoIdentityId || '');
+                                        if (userGroups.length > 0) {
+                        client.models.Tenant.get({id: userGroups[0]}).then(({ data: tenant, errors: getTenantErrors }) => {
+                            if (getTenantErrors) console.error('getTenantErrors:', JSON.stringify(getTenantErrors, null, 2));
+                            if (tenant) {
+                                setTenant(tenant);
+                            }
+                        });
+                    }
                 });
 
                 // Fetch channels
@@ -72,6 +83,7 @@ const ContentImage: React.FC = () => {
         if (values.quality === 'HIGH') { model_input = { prompt: values.prompt, go_fast: false, megapixels: '10', num_outputs: 4, aspect_ratio: values.ratio, output_quality: 100, num_inference_steps: 4 } }
         else { model_input = { prompt: values.prompt, go_fast: true, megapixels: '1', num_outputs: 1, aspect_ratio: values.ratio, output_quality: 80, num_inference_steps: 1 } }
         const content = {
+            group: tenant?.id,
             content_type: 'IMAGE' as const,
             content_campaign: values.campaign,
             content_model: values.model,
@@ -190,6 +202,7 @@ const ContentImage: React.FC = () => {
                                     >
                                         {isSubmitted ? i18n.t('Content:Model.Re-Generate') : i18n.t('Content:Model.Generate')}
                                     </Button>
+                                    &nbsp;{tenant?.used_image_generation||0}/{tenant?.quota_image_generation} used
                                 </Form.Item>
                             </Form>
                         </div>
