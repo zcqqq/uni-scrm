@@ -17,7 +17,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
         },
         body: JSON.stringify({
             version: model.latest_version.id,
-            input: body.model_input,
+            input: JSON.parse(body.model_input),
             webhook: process.env.NEXT_PUBLIC_CALLBACK_HOST + '/callback/replicate',
             webhook_events_filter: ['completed']
         })

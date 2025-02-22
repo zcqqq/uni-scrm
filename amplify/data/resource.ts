@@ -74,8 +74,7 @@ const schema = a.schema({
     content_height: a.integer(),
 
     contentPublishs: a.hasMany('ContentPublish', 'content_id'),
-  }).authorization(allow => [allow.groupDefinedIn('group')])
-  .secondaryIndexes((index) => [index('generation_id')]),
+  }).secondaryIndexes((index) => [index('generation_id')]),
   ContentPublish: a.model({
     group: a.string(),
     content_id: a.id().required(),

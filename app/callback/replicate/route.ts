@@ -14,8 +14,23 @@ export async function POST(request: NextRequest) {
     content_files: body.output,
   }
   const { data: updatedContent } = await cookiesClient.models.Content.update(updateContent);
+  const { data: content } = await cookiesClient.models.Content.get({id: contents[0].id});
+  if (content?.group) {
+    const {data: tenant} = await cookiesClient.models.Tenant.get({id: content.group});
+    const updateTenant = {
+      id: content.group,
+      used_image_generation: (tenant?.used_image_generation || 0) + 1,
+    }
+    const { data: updatedTenant } = await cookiesClient.models.Tenant.update(updateTenant);
+    console.info("used image generation 1");
+  }
 
-  const s3Client = new S3Client({region: 'ap-east-1', maxAttempts: 3});
+  const s3Client = new S3Client({
+    region: 'ap-east-1',
+    maxAttempts: 3,
+    endpoint: 'https://s3.ap-east-1.amazonaws.com',
+    forcePathStyle: true
+  });
   const outputs = Array.isArray(body.output) ? body.output : [body.output];
   const filenames = [];
   for (const fileUrl of outputs) {
@@ -48,7 +63,7 @@ export async function POST(request: NextRequest) {
 
         filenames.push(filename);
     } catch (error) {
-        console.log('upload file error: ' + error);
+        console.error('upload file error: ' + error);
     } finally {
         s3Client.destroy();
     }
