@@ -37,7 +37,7 @@ export default async function authorize(code: String) {
 
         //upsert Channel in database
         const { data: channels } = await client.models.Channel.list({
-            filter: { channel_id: { eq: response.data.open_id } }
+            filter: { channel_id: { eq: response.data.open_id } }, authMode: 'userPool'
         });
         if (channels.length > 0) {
             const channel = {
@@ -47,7 +47,7 @@ export default async function authorize(code: String) {
                 refresh_token: response.data.refresh_token,
                 scope: response.data.scope,
             };
-            const { data: updatedChannel, errors } = await client.models.Channel.update(channel);
+            const { data: updatedChannel, errors } = await client.models.Channel.update(channel, { authMode: 'userPool' });
             console.log('updatedChannel: ' + updatedChannel);
         } else {
             const channel = {
@@ -57,7 +57,7 @@ export default async function authorize(code: String) {
                 refresh_token: response.data.refresh_token,
                 scope: response.data.scope,
             };
-            const { data: createdChannel, errors } = await client.models.Channel.create(channel);
+            const { data: createdChannel, errors } = await client.models.Channel.create(channel, { authMode: 'userPool' });
             console.log('createdChannel: ' + createdChannel);
         }
 

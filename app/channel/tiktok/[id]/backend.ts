@@ -5,7 +5,7 @@ import { AxiosResponse } from 'axios';
 const client = generateClient<Schema>();
 export const tiktokBackend = {
     refreshToken: async (id: string) => {
-        const { data: channel } = await client.models.Channel.get({ id });
+        const { data: channel } = await client.models.Channel.get({ id }, { authMode: 'userPool' });
 
 
         //Postman start
@@ -34,7 +34,7 @@ export const tiktokBackend = {
         const { data: updatedChannel, errors } = await client.models.Channel.update({
             id: channel.id,
             access_token: response.data.access_token
-        });
+        }, { authMode: 'userPool' });
         
     }
 };

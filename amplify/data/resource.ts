@@ -9,7 +9,7 @@ const schema = a.schema({
     key: a.string(), //企业微信suite_ticket
     value: a.string(),
     timestamp: a.integer(),
-  }),
+  }).authorization(allow => [allow.publicApiKey()]),
   Tenant: a.model({
     is_deleted: a.boolean().default(false),
     group: a.string(),
@@ -19,12 +19,12 @@ const schema = a.schema({
     used_image_generation: a.integer(),
     quota_video_generation: a.integer(),
     used_video_generation: a.integer(),
-  }),
+  }).authorization(allow => [allow.publicApiKey()]),
   User: a.model({
     is_deleted: a.boolean().default(false),
     group: a.string(),
     email: a.string(),
-  }),
+  }).authorization(allow => [allow.publicApiKey()]),
   Channel: a.model({
     is_deleted: a.boolean().default(false),
     group: a.string(),
@@ -138,7 +138,7 @@ const schema = a.schema({
     field_name: a.string(),
     field_type: a.string(),
   }),
-}).authorization(allow => [allow.owner(),allow.groupDefinedIn('group'),allow.publicApiKey(),
+}).authorization(allow => [allow.owner(),allow.groupDefinedIn('group'),
 allow.resource(tiktok), allow.resource(weixinWork), allow.resource(postConfirmation)]);
 
 export type Schema = ClientSchema<typeof schema>;

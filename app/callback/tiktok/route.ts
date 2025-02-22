@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
 
       //upsert Channel in database
       const { data: channels } = await cookiesClient.models.Channel.list({
-          filter: { channel_id: { eq: response.data.open_id } }
+          filter: { channel_id: { eq: response.data.open_id } }, authMode: 'userPool'
       });
       if (channels.length > 0) {
           const channel = {
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
               refresh_token: response.data.refresh_token,
               scope: response.data.scope,
           };
-          const { data: updatedChannel, errors } = await cookiesClient.models.Channel.update(channel);
+          const { data: updatedChannel, errors } = await cookiesClient.models.Channel.update(channel, { authMode: 'userPool' });
           console.log('updatedChannel: ' + updatedChannel);
       } else {
           const channel = {
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
               refresh_token: response.data.refresh_token,
               scope: response.data.scope,
           };
-          const { data: createdChannel, errors } = await cookiesClient.models.Channel.create(channel);
+          const { data: createdChannel, errors } = await cookiesClient.models.Channel.create(channel, { authMode: 'userPool' });
           console.log('createdChannel: ' + createdChannel);
       }
 

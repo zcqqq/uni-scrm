@@ -31,6 +31,6 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const { data: updatedContent, errors } = await cookiesClient.models.Content.update({
         id: contentId,
         generation_id: prediction.id,
-    });
+    }, { authMode: 'userPool' });
     return NextResponse.json({ status: 200 });
 };

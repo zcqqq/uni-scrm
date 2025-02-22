@@ -8,7 +8,7 @@ export default async function change_auth(refresh_token?: String) {
     if (refresh_token === null) {
         //list Channel.refresh_token in database
         const { data: channels } = await client.models.Channel.list({
-            filter: { is_deleted: { eq: false } }
+            filter: { is_deleted: { eq: false } }, authMode: 'userPool'
         });
         refresh_tokens = channels.map(channel => channel.refresh_token).filter((token): token is string => token !== null);
     } else {

@@ -8,7 +8,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     console.log('contentPublishId: ' + contentPublishId);
 
     //get ContentPublish from database
-    const { data: contentPublish } = await cookiesClient.models.ContentPublish.get({ id: contentPublishId });
+    const { data: contentPublish } = await cookiesClient.models.ContentPublish.get({ id: contentPublishId }, { authMode: 'userPool' });
     if (!contentPublish) { return NextResponse.json({ status: 404 }); }
     const { data: content } = await contentPublish.content();
     const { data: channel } = await contentPublish.channel();
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
         const { data: updatedContentPublish, errors } = await cookiesClient.models.ContentPublish.update({
             id: contentPublishId,
             publish_id: response.data.data.publish_id
-        });
+        }, { authMode: 'userPool' });
         return NextResponse.json({ status: 200 });
     } catch (error) {
         console.log(error);

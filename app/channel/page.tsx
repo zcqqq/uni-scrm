@@ -35,7 +35,7 @@ const Channel: React.FC = () => {
   useEffect(() => {
     const getChannels = async () => {
       const {data} = await client.models.Channel.list({
-        filter: { is_deleted: { eq: false } }
+        filter: { is_deleted: { eq: false } }, authMode: 'userPool'
     });
       setChannels(data);
     };

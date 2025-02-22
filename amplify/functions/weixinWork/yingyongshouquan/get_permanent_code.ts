@@ -33,7 +33,7 @@ export default async function get_permanent_code(suite_access_token: String, aut
 
     //upsert Channel in database
     const { data: channels } = await client.models.Channel.list({
-        filter: { channel_id: { eq: response.data.auth_corp_info.corpid } }
+        filter: { channel_id: { eq: response.data.auth_corp_info.corpid } }, authMode: 'userPool'
     });
     if (channels.length > 0) {
         const channel = {
@@ -41,13 +41,13 @@ export default async function get_permanent_code(suite_access_token: String, aut
             is_deleted: false,
             channel_secret: response.data.permanent_code,
         };
-        const { data: updatedChannel, errors } = await client.models.Channel.update(channel);
+        const { data: updatedChannel, errors } = await client.models.Channel.update(channel, { authMode: 'userPool' });
     } else {
         const channel = {
             channel_id: response.data.auth_corp_info.corpid,
             channel_secret: response.data.permanent_code,
             channel_name: response.data.auth_corp_info.corp_name,
         };
-        const { data: createdChannel, errors } = await client.models.Channel.create(channel);
+        const { data: createdChannel, errors } = await client.models.Channel.create(channel, { authMode: 'userPool' });
     }
 }
