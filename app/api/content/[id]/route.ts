@@ -6,6 +6,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const contentId = params.id;
     const body = await request.json();
 
+    console.log("token: " + process.env.REPLICATE_API_TOKEN);
     const getModelResponse = await fetch("https://api.replicate.com/v1/models/" + body.content_model, { headers: { 'Authorization': `Token ${process.env.REPLICATE_API_TOKEN}` } });
     const model = await getModelResponse.json();
     console.log("model response: " + JSON.stringify(model));
