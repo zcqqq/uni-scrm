@@ -101,12 +101,15 @@ const ContentImage: React.FC = () => {
             headers: { 'Content-Type': 'application/json' }
         });
     };
-    const handleRegenerate = () => {
-        console.log('handleReset called');
-        console.log('isSubmitted before:', isSubmitted);
+    const handleRegenerate = (e: React.MouseEvent) => {
+        e.preventDefault();
+        console.log('handleRegenetate called');
         form.resetFields();
         setIsSubmitted(false);
-        console.log('isSubmitted after setState call');
+        form.setFieldsValue({
+            campaign: undefined,
+            prompt: undefined,
+        });
     };
 
     const handlePublish = async () => {
@@ -167,13 +170,16 @@ const ContentImage: React.FC = () => {
                                         <Select.Option value="abcd" style={{ color: '#999' }}>Midjourney</Select.Option>
                                     </Select>
                                 </Form.Item>
-                                <Form.Item name="campaign" label={
-                                    <Tooltip title={i18n.t('Content:Tooltip.Campaign')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Marketing.Campaign')}</span></Tooltip>
-                                } required><Input />
+                                <Form.Item name="campaign"
+                                    label={<Tooltip title={i18n.t('Content:Tooltip.Campaign')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Marketing.Campaign')}</span></Tooltip>}
+                                    rules={[{ required: true, message: i18n.t('Form.FieldsRequired') }]}
+                                >
+                                    <Input />
                                 </Form.Item>
-                                <Form.Item name="prompt" label={
-                                    <Tooltip title={i18n.t('Content:Tooltip.Prompt')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Prompt')}</span></Tooltip>
-                                } required><Input.TextArea rows={4} />
+                                <Form.Item name="prompt"
+                                    label={<Tooltip title={i18n.t('Content:Tooltip.Prompt')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Prompt')}</span></Tooltip>}
+                                    rules={[{ required: true, message: i18n.t('Form.FieldsRequired') }]}>
+                                    <Input.TextArea rows={4} />
                                 </Form.Item>
                                 <Form.Item name="quality" label={
                                     <Tooltip title={i18n.t('Content:Tooltip.Quality')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Quality')}</span></Tooltip>
@@ -231,13 +237,13 @@ const ContentImage: React.FC = () => {
 
                             {/* Input text area */}
                             <div style={{ padding: '16px' }}>
-                                <Input.TextArea rows={4} placeholder='相关文案' />
+                                <Input.TextArea rows={4} placeholder={i18n.t('Content:Publish.Title')} />
                             </div>
 
                             {/* Publish button */}
                             <div style={{ padding: '16px', display: 'flex', justifyContent: 'center' }}>
                                 <Button type="primary" size="large" onClick={handlePublish}>
-                                    {i18n.t('Content:Publish')}
+                                    {i18n.t('Content:Publish.Publish')}
                                 </Button>
                             </div>
 

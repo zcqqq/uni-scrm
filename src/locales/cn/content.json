@@ -1,7 +1,10 @@
 {
     "Current": "当前",
     "HistoryList": "历史列表",
-    "Publish": "发布",
+    "Publish": {
+        "Publish": "发布",
+        "Title": "标题"
+    },
     "File": {
         "Title": "标题",
         "Image": "图片",

@@ -1,7 +1,10 @@
 {
     "Current": "Current",
     "HistoryList": "History List",
-    "Publish": "Publish",
+    "Publish": {
+        "Publish": "Publish",
+        "Title": "Title"
+    },
     "File": {
         "Title": "Title",
         "Image": " Image ",

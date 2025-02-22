@@ -105,12 +105,15 @@ const ContentVideo: React.FC = () => {
         });
     };
 
-    const handleRegenerate = () => {
-        console.log('handleReset called');
-        console.log('isSubmitted before:', isSubmitted);
+    const handleRegenerate = (e: React.MouseEvent) => {
+        e.preventDefault();
+        console.log('handleRegenetate called');
         form.resetFields();
         setIsSubmitted(false);
-        console.log('isSubmitted after setState call');
+        form.setFieldsValue({
+            campaign: undefined,
+            prompt: undefined,
+        });
     };
 
     const handlePublish = async () => {
@@ -174,11 +177,13 @@ const ContentVideo: React.FC = () => {
                                 </Form.Item>
                                 <Form.Item name="campaign" label={
                                     <Tooltip title={i18n.t('Content:Tooltip.Campaign')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Marketing.Campaign')}</span></Tooltip>
-                                } required><Input />
+                                } rules={[{ required: true, message: i18n.t('Form.FieldsRequired') }]}
+                                ><Input />
                                 </Form.Item>
                                 <Form.Item name="prompt" label={
                                     <Tooltip title={i18n.t('Content:Tooltip.Prompt')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Prompt')}</span></Tooltip>
-                                } required><Input.TextArea rows={4} />
+                                } rules={[{ required: true, message: i18n.t('Form.FieldsRequired') }]}
+                                ><Input.TextArea rows={4} />
                                 </Form.Item>
                                 <Form.Item name="duration" label={
                                     <Tooltip title={i18n.t('Content:Tooltip.Duration')}><span style={{ borderBottom: '1px dashed #999' }}>{i18n.t('Content:Model.Duration')}</span></Tooltip>
@@ -244,7 +249,7 @@ const ContentVideo: React.FC = () => {
                             {/* Publish button */}
                             <div style={{ padding: '16px', display: 'flex', justifyContent: 'center' }}>
                                 <Button type="primary" size="large" onClick={handlePublish}>
-                                    {i18n.t('Content:Publish')}
+                                    {i18n.t('Content:Publish.Publish')}
                                 </Button>
                             </div>
 
