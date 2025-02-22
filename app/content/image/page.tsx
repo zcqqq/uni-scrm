@@ -39,8 +39,8 @@ const ContentImage: React.FC = () => {
                     const cognitoIdentityId = info.identityId;
                     const userGroups = (info.tokens?.accessToken?.payload['cognito:groups'] as string[]) || [];
                     setEntityId(cognitoIdentityId || '');
-                                        if (userGroups.length > 0) {
-                        client.models.Tenant.get({id: userGroups[0]}).then(({ data: tenant, errors: getTenantErrors }) => {
+                    if (userGroups.length > 0) {
+                        client.models.Tenant.get({ id: userGroups[0] }).then(({ data: tenant, errors: getTenantErrors }) => {
                             if (getTenantErrors) console.error('getTenantErrors:', JSON.stringify(getTenantErrors, null, 2));
                             if (tenant) {
                                 setTenant(tenant);
@@ -198,11 +198,11 @@ const ContentImage: React.FC = () => {
                                         htmlType={isSubmitted ? "button" : "submit"}
                                         size="large"
                                         onClick={isSubmitted ? handleRegenerate : undefined}
-                                        disabled={false}
+                                        disabled={(tenant?.used_image_generation || 0) >= (tenant?.quota_image_generation || 0)}
                                     >
                                         {isSubmitted ? i18n.t('Content:Model.Re-Generate') : i18n.t('Content:Model.Generate')}
                                     </Button>
-                                    &nbsp;{tenant?.used_image_generation||0}/{tenant?.quota_image_generation} used
+                                    &nbsp;{tenant?.used_image_generation || 0}/{tenant?.quota_image_generation} used
                                 </Form.Item>
                             </Form>
                         </div>

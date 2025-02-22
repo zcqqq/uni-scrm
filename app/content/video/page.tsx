@@ -17,12 +17,14 @@ import { post } from 'aws-amplify/api';
 
 
 const client = generateClient<Schema>();
+type Tenant = Schema['Tenant']['type'];
 type Channel = Schema['Channel']['type'];
 type Content = Schema['Content']['type'];
 type ContentPublish = Schema['ContentPublish']['type'];
 const { Header, Content } = Layout;
 const ContentVideo: React.FC = () => {
     const [form] = Form.useForm();
+    const [tenant, setTenant] = useState<Tenant>();
     const [channels, setChannels] = useState<Channel[]>([]);
     const [contents, setContents] = useState<Content[]>([]);
     const [selectedContent, setSelectedContent] = useState<Content>();
@@ -30,8 +32,6 @@ const ContentVideo: React.FC = () => {
     const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [entityId, setEntityId] = useState<string>('');
-    const [quotaVideoGeneration, setQuotaVideoGeneration] = useState(0);
-    const [usedVideoGeneration, setUsedVideoGeneration] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -41,12 +41,11 @@ const ContentVideo: React.FC = () => {
                     const cognitoIdentityId = info.identityId;
                     const userGroups = (info.tokens?.accessToken?.payload['cognito:groups'] as string[]) || [];
                     setEntityId(cognitoIdentityId || '');
-                                        if (userGroups.length > 0) {
-                        client.models.Tenant.get({id: userGroups[0]}).then(({ data: tenant, errors: getTenantErrors }) => {
+                    if (userGroups.length > 0) {
+                        client.models.Tenant.get({ id: userGroups[0] }).then(({ data: tenant, errors: getTenantErrors }) => {
                             if (getTenantErrors) console.error('getTenantErrors:', JSON.stringify(getTenantErrors, null, 2));
                             if (tenant) {
-                                setQuotaVideoGeneration(tenant.quota_video_generation || 0);
-                                setUsedVideoGeneration(tenant.used_video_generation || 0);
+                                setTenant(tenant);
                             }
                         });
                     }
@@ -214,11 +213,11 @@ const ContentVideo: React.FC = () => {
                                         htmlType={isSubmitted ? "button" : "submit"}
                                         size="large"
                                         onClick={isSubmitted ? handleRegenerate : undefined}
-                                        disabled={false}
+                                        disabled={(tenant?.used_video_generation || 0) >= (tenant?.quota_video_generation || 0)}
                                     >
                                         {isSubmitted ? i18n.t('Content:Model.Re-Generate') : i18n.t('Content:Model.Generate')}
                                     </Button>
-                                    &nbsp;{usedVideoGeneration}/{quotaVideoGeneration} used
+                                    &nbsp;{tenant?.used_video_generation || 0}/{tenant?.quota_video_generation} used
                                 </Form.Item>
                             </Form>
                         </div>
