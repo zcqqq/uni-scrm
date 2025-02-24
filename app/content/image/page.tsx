@@ -38,6 +38,7 @@ const ContentImage: React.FC = () => {
                 fetchAuthSession().then((info) => {
                     const cognitoIdentityId = info.identityId;
                     const userGroups = (info.tokens?.accessToken?.payload['cognito:groups'] as string[]) || [];
+                    console.log('userGroups:', userGroups);
                     setEntityId(cognitoIdentityId || '');
                     if (userGroups.length > 0) {
                         client.models.Tenant.get({ id: userGroups[0] }).then(({ data: tenant, errors: getTenantErrors }) => {

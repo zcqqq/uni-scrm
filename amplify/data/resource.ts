@@ -53,7 +53,7 @@ const schema = a.schema({
     privacy_level_options: a.string().array(), //TIKTOK
 
     contentPublishs: a.hasMany('ContentPublish', 'channel_id'),
-  }),
+  }).secondaryIndexes((index) => [index('channel_id')]),
   Content: a.model({
     group: a.string(),
     tenant_id: a.string(),
