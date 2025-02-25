@@ -7,14 +7,14 @@ export async function POST(request: NextRequest) {
     
   const { data: contents } = await cookiesClient.models.Content.listContentByGeneration_id({
     generation_id: body.id,
-  }, { authMode: 'userPool' });
+  });
   const updateContent ={
     id: contents[0].id,
     generation_status: body.status,
     content_files: body.output,
   }
-  const { data: updatedContent } = await cookiesClient.models.Content.update(updateContent, { authMode: 'userPool' });
-  const { data: content } = await cookiesClient.models.Content.get({id: contents[0].id}, { authMode: 'userPool' });
+  const { data: updatedContent } = await cookiesClient.models.Content.update(updateContent);
+  const { data: content } = await cookiesClient.models.Content.get({id: contents[0].id});
   if (content?.group) {
     const {data: tenant} = await cookiesClient.models.Tenant.get({id: content.group});
     const updateTenant = {
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
   await cookiesClient.models.Content.update({
     id: contents[0].id,
     content_files: filenames
-  }, { authMode: 'userPool' });
+  });
 
   return NextResponse.json({ status: 200 });
 }
