@@ -28,6 +28,11 @@ const imageStyle = {
   padding: '20px'
 };
 
+const disabledIconStyle = {
+  color: '#d9d9d9',
+  cursor: 'not-allowed'
+};
+
 const client = generateClient<Schema>();
 const Channel: React.FC = () => {
   const [channels, setChannels] = useState<any[]>([]);
@@ -55,6 +60,7 @@ const Channel: React.FC = () => {
       <Index />
       <Layout style={{ marginLeft: 200, minHeight: '100vh', padding: '24px' }}>
         <Tabs
+          defaultActiveKey={channels.length === 0 ? 'CREATE' : 'CONNECTED'}
           items={[
             {
               key: 'CONNECTED',
@@ -116,7 +122,8 @@ const Channel: React.FC = () => {
                           style={imageStyle}
                         />
                       }
-                      actions={[<SettingOutlined key="connectTiktok" onClick={() => window.open(tiktokAuthUrl, '_blank')} />]}
+                      actions={[
+                        <SettingOutlined key="connectTiktok" style={disabledIconStyle} />                      ]}
                     >
                       <Meta title={i18n.t('Channel:DOUYIN.ChannelType')} style={{ textAlign: 'center' }} />
                     </Card>
@@ -131,7 +138,7 @@ const Channel: React.FC = () => {
                           style={imageStyle}
                         />
                       }
-                      actions={[<SettingOutlined key="connectWeixin" onClick={() => window.open('https://baidu.com', '_blank')} />]}
+                      actions={[<SettingOutlined key="connectWeixin" style={disabledIconStyle} />]}
                     >
                       <Meta title={i18n.t('Channel:WEIXIN.ChannelType')} style={{ textAlign: 'center' }} />
                     </Card>
@@ -146,7 +153,7 @@ const Channel: React.FC = () => {
                           style={imageStyle}
                         />
                       }
-                      actions={[<SettingOutlined key="connectWeixinWork" onClick={() => window.open('https://baidu.com', '_blank')} />]}
+                      actions={[<SettingOutlined key="connectWeixinWork" style={disabledIconStyle} />]}
                     >
                       <Meta title={i18n.t('Channel:WEIXINWORK.ChannelType')} style={{ textAlign: 'center' }} />
                     </Card>

@@ -40,7 +40,7 @@ export const handler: PostConfirmationTriggerHandler = async (event) => {
             is_deleted: false,
             tenant_name: event.request.userAttributes.nickname,
             quota_image_generation: 10,
-            quota_video_generation: 1,
+            quota_video_generation: 0,
         };
         const { data: createdTenant, errors } = await dataClient.models.Tenant.create(tenant);
         console.log('createdTenant: ' + createdTenant);
@@ -50,7 +50,7 @@ export const handler: PostConfirmationTriggerHandler = async (event) => {
             is_deleted: false,
             tenant_name: event.request.userAttributes.email,
             quota_image_generation: 10,
-            quota_video_generation: 1,
+            quota_video_generation: 0,
         };
         const { data: createdTenant, errors } = await dataClient.models.Tenant.create(tenant);
         console.log('createdTenant: ' + createdTenant);
