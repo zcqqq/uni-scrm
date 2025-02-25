@@ -37,7 +37,7 @@ const Index: React.FC = () => {
     getItem(i18next.t('Menu.Marketing'), '/marketing', null, [
       getItem(i18next.t('Menu.Content'), '/content', <ReadOutlined />, [
         getItem(i18next.t('Menu.Content.Image'), '/content/image', null),
-        getItem(i18next.t('Menu.Content.Text'), '/content/text', null),
+        getItem(i18next.t('Menu.Content.Text'), '/content/text', <Image src='/asset/icon/coming_soon.svg' height={24} width={24} />, undefined, undefined, { disabled: true }),
         getItem(i18next.t('Menu.Content.Video'), '/content/video', null)
       ]),
       getItem(i18next.t('Menu.Strategy'), '/strategy', <Image src='/asset/icon/coming_soon.svg' height={24} width={24} />, undefined, undefined, { disabled: true }),
