@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     }
     var data = qs.stringify({
         'client_key': process.env.NEXT_PUBLIC_TIKTOK_CLIENT_KEY,
-        'client_secret': process.env.TIKTOK_CLIENT_SECRET,
+        'client_secret': process.env.NEXT_PUBLIC_TIKTOK_CLIENT_SECRET,
         'code': code,
         'grant_type': 'authorization_code',
         'redirect_uri': process.env.NEXT_PUBLIC_CALLBACK_HOST + '/callback/tiktok'
