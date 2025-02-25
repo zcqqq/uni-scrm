@@ -5,7 +5,7 @@ export default function appsync(body) {
   const options = {
     method: 'POST', headers: {
       'Content-Type': 'application/json',
-      'x-api-key': 'da2-7hhdqgedwfhsddxbbw24bulgfa'
+      'x-api-key': ''
     },
   };
   return new Promise((resolve, reject) => {

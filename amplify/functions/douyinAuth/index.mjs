@@ -7,8 +7,8 @@ export const handler = async (event) => {
   // get token
   const url = 'https://open.douyin.com/oauth/access_token/';
   const queryParameters = {
-    client_key: 'awgqrvbxb86rz073',
-    client_secret: 'f1089b5c3ca50ef27c9144d52a7febb1',
+    client_key: '',
+    client_secret: '',
     code: queryStringParameters.code,
     grant_type: 'authorization_code'
   };

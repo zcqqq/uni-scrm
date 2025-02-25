@@ -12,8 +12,8 @@ export default async function get_suite_token(suite_ticket: String) {
 
   let data = JSON.stringify({
     //todo
-    "suite_id": "dka305d89efb00d70b",
-    "suite_secret": "8yDdZAEDkfXK82Pg8TNplVqZrIpTeSLHaudDO_lnZ-g",
+    "suite_id": "",
+    "suite_secret": "",
     "suite_ticket": suite_ticket
   });
 

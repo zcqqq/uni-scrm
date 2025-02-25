@@ -28,10 +28,10 @@ export default async function change_auth(refresh_token?: String) {
     for (const refresh_token of refresh_tokens) {
         //call API https://developers.tiktok.com/doc/oauth-user-access-token-management
         let data = qs.stringify({
-            'client_key': '{{client_key}}',
-            'client_secret': '{{client_secret}}',
+            'client_key': '',
+            'client_secret': '',
             'grant_type': 'refresh_token',
-            'refresh_token': 'rft.RZpJMODHISmutlz9k4YVkDegkvmVuvnykOXKmOsLqpdvXPo9P7ICEwkJbpNM!5092.va'
+            'refresh_token': ''
         });
 
         let config = {
