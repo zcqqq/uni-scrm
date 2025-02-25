@@ -1,0 +1,52 @@
+{
+    "version": "2.0",
+    "routeKey": "ANY /tiktok",
+    "rawPath": "/tiktok",
+    "rawQueryString": "code=1hgEiGO84qLeAoNJUhy84gk7jnQo2cQk7CkY70GYzVEaae9f1L_gx_YSrYsZfJsCmb25-c8bUVp0OZKb-TXFL7Qbw-7IprdrTQCrET_SeZNydMQnfFbXFIMIWXzbjEc342AHf63TtBDWV2TJVrWqnzELTbHjPjgz_PuW-5AHBX9ageYyXFQiZmi88PFqqydwFTcVKWJvi8_MDUqHA_RF0g3W91zJvSbVg2oMAcqrcnzTTLpuS7td_rdOyAtNY01G%2A3%215081.va&scopes=user.info.basic%2Cuser.info.profile%2Cuser.info.stats%2Cvideo.publish%2Cvideo.upload%2Cvideo.list&state=0",
+    "headers": {
+      "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+      "accept-encoding": "gzip, deflate, br, zstd",
+      "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,ja;q=0.6",
+      "content-length": "0",
+      "host": "imh484s1bh.execute-api.us-east-1.amazonaws.com",
+      "priority": "u=0, i",
+      "referer": "https://www.tiktok.com/",
+      "sec-ch-ua": "\"Chromium\";v=\"130\", \"Google Chrome\";v=\"130\", \"Not?A_Brand\";v=\"99\"",
+      "sec-ch-ua-mobile": "?0",
+      "sec-ch-ua-platform": "\"macOS\"",
+      "sec-fetch-dest": "document",
+      "sec-fetch-mode": "navigate",
+      "sec-fetch-site": "cross-site",
+      "upgrade-insecure-requests": "1",
+      "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+      "x-amzn-trace-id": "Root=1-67627f27-2148bf7d4b979a1722a3d982",
+      "x-forwarded-for": "38.98.188.220",
+      "x-forwarded-port": "443",
+      "x-forwarded-proto": "https"
+    },
+    "queryStringParameters": {
+      "code": "1hgEiGO84qLeAoNJUhy84gk7jnQo2cQk7CkY70GYzVEaae9f1L_gx_YSrYsZfJsCmb25-c8bUVp0OZKb-TXFL7Qbw-7IprdrTQCrET_SeZNydMQnfFbXFIMIWXzbjEc342AHf63TtBDWV2TJVrWqnzELTbHjPjgz_PuW-5AHBX9ageYyXFQiZmi88PFqqydwFTcVKWJvi8_MDUqHA_RF0g3W91zJvSbVg2oMAcqrcnzTTLpuS7td_rdOyAtNY01G*3!5081.va",
+      "scopes": "user.info.basic,user.info.profile,user.info.stats,video.publish,video.upload,video.list",
+      "state": "0"
+    },
+    "requestContext": {
+      "accountId": "099990170032",
+      "apiId": "imh484s1bh",
+      "domainName": "imh484s1bh.execute-api.us-east-1.amazonaws.com",
+      "domainPrefix": "imh484s1bh",
+      "http": {
+        "method": "GET",
+        "path": "/tiktok",
+        "protocol": "HTTP/1.1",
+        "sourceIp": "38.98.188.220",
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+      },
+      "requestId": "C-jOTjYRoAMEZcg=",
+      "routeKey": "ANY /tiktok",
+      "stage": "$default",
+      "time": "18/Dec/2024:07:52:07 +0000",
+      "timeEpoch": 1734508327957
+    },
+    "isBase64Encoded": false
+  }
+  

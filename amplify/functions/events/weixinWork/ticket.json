@@ -1,0 +1,43 @@
+{
+    "version": "2.0",
+    "routeKey": "ANY /weixinWork",
+    "rawPath": "/weixinWork",
+    "rawQueryString": "msg_signature=2a1a00afd5621f7279f5edd9d16e1d31d05b203b&timestamp=1734096742&nonce=1734069939",
+    "headers": {
+      "accept": "*/*",
+      "content-length": "512",
+      "content-type": "text/xml",
+      "host": "imh484s1bh.execute-api.us-east-1.amazonaws.com",
+      "pragma": "no-cache",
+      "user-agent": "Mozilla/4.0",
+      "x-amzn-trace-id": "Root=1-675c3767-1c5c154531330c013ba04c94",
+      "x-forwarded-for": "183.47.98.168",
+      "x-forwarded-port": "443",
+      "x-forwarded-proto": "https"
+    },
+    "queryStringParameters": {
+      "msg_signature": "2a1a00afd5621f7279f5edd9d16e1d31d05b203b",
+      "nonce": "1734069939",
+      "timestamp": "1734096742"
+    },
+    "requestContext": {
+      "accountId": "099990170032",
+      "apiId": "imh484s1bh",
+      "domainName": "imh484s1bh.execute-api.us-east-1.amazonaws.com",
+      "domainPrefix": "imh484s1bh",
+      "http": {
+        "method": "POST",
+        "path": "/weixinWork",
+        "protocol": "HTTP/1.1",
+        "sourceIp": "183.47.98.168",
+        "userAgent": "Mozilla/4.0"
+      },
+      "requestId": "Cu2YNjynIAMEcDg=",
+      "routeKey": "ANY /weixinWork",
+      "stage": "$default",
+      "time": "13/Dec/2024:13:32:23 +0000",
+      "timeEpoch": 1734096743300
+    },
+    "body": "<xml><ToUserName><![CDATA[dka305d89efb00d70b]]></ToUserName><Encrypt><![CDATA[v6MfFPw8tCcHmwowMfyGux/H+iC+sAEVye92uSemGRHXatotqsNFV/lzkhOxIwqhXQT/Vvcb215xi4xt2S4BTft3zfqLcuWNtdBanuFVAdEuUuH5WU/RtTo9H1xu8byCLlnqD7/o8T5BgYZFVwA44gHiYcqWnhEg+A1bfyz5elCaDeqJBsIrQk4V1TSU1XOFD57qxvAU/BMqgUKrwjJWFFKCBBSskzH3Q/AtNPq5Ir4PAq5X1sBWeaBNVrnnfH+qM6x1KEdY6hnqsh1wBbQDhs2jDwK/HvUloih9L1gPWN5qLBSdgHb4Lngezk1yZoQWcz9f9l28Si98EswMEGvHtLPkhhET9XuJZrHPWLJSrSCFGg0BJqstbZIQ0bfhh+7o]]></Encrypt><AgentID><![CDATA[]]></AgentID></xml>",
+    "isBase64Encoded": false
+  }

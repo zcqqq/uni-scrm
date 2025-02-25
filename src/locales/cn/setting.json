@@ -1,0 +1,22 @@
+{
+  "Menu": {
+    "BackToHome": "返回首页",
+    "Personalization": "个性化设置",
+    "Configuration": "配置",
+    "Metadata": "元数据"
+  },
+  "Personalization": {
+    "Language": "语言"
+  },
+  "Metadata": {
+    "CustomerAttributes": "客户属性"
+  },
+  "Billing": {
+    "Billing": "计费",
+    "Pro": "Pro",
+    "Ultra": "Ultra",
+    "Team": "Team",
+    "UltraNeeded": "需要购买Ultra版",
+    "TeamNeeded": "需要购买Team版"
+  }
+}

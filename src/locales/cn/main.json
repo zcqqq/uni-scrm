@@ -1,0 +1,25 @@
+{
+  "Menu": {
+    "Home": "首页",
+    "Marketing": "营销",
+    "Content": "内容",
+    "Content.Image": "图片",
+    "Content.Text": "文本",
+    "Content.Video": "视频",
+    "Strategy": "策略",
+    "Audience": "受众",
+    "Data": "数据",
+    "Customer": "客户",
+    "Group": "客户群",
+    "Tag": "标签",
+    "Setting": "设置",
+    "SignOut": "登出"
+  },
+  "Form": {
+    "FieldsRequired": "请输入必填项",
+    "Save": "保存"
+  },
+  "Marketing": {
+    "Campaign": "活动"
+  }
+}

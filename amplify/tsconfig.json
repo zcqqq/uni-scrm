@@ -11,7 +11,11 @@
     "paths": {
       "$amplify/*": [
         "../.amplify/generated/*"
+      ],
+      "*": [
+        "../*"
       ]
-    }
+    },
+    "baseUrl": "."
   }
 }

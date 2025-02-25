@@ -1,0 +1,18 @@
+{
+  "Tab": {
+    "Existing": "Existing",
+    "New": "New"
+  },
+  "TIKTOK": {
+    "ChannelType": "TikTok"
+  },
+  "DOUYIN": {
+    "ChannelType": "Douyin Enterprise Account"
+  },
+  "WEIXIN": {
+    "ChannelType": "WeChat Official Account"
+  },
+  "WEIXINWORK": {
+    "ChannelType": "WeCom"
+  }
+}

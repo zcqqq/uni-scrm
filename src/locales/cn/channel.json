@@ -1,0 +1,18 @@
+{
+  "Tab": {
+    "Existing": "已有渠道",
+    "New": "新建渠道"
+  },
+  "TIKTOK": {
+    "ChannelType": "TikTok"
+  },
+  "DOUYIN": {
+    "ChannelType": "抖音企业号"
+  },
+  "WEIXIN": {
+    "ChannelType": "微信公众号"
+  },
+  "WEIXINWORK": {
+    "ChannelType": "企业微信"
+  }
+}

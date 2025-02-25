@@ -1,0 +1,22 @@
+{
+  "Menu": {
+    "BackToHome": "Back to Home",
+    "Personalization": "Personalization",
+    "Configuration": "Configuration",
+    "Metadata": "Metadata"
+  },
+  "Personalization": {
+    "Language": "Language"
+  },
+  "Metadata": {
+    "CustomerAttributes": "Customer Attributes"
+  },
+  "Billing": {
+    "Billing": "Billing",
+    "Pro": "Pro",
+    "Ultra": "Ultra",
+    "Team": "Team",
+    "UltraNeeded": "Ultra Version Needed",
+    "TeamNeeded": "Team Version Needed"
+  }
+}

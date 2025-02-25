@@ -1,0 +1,25 @@
+{
+  "Menu": {
+    "Home": "Home",
+    "Marketing": "Marketing",
+    "Content": "Content",
+    "Content.Image": "Image",
+    "Content.Text": "Text",
+    "Content.Video": "Video",
+    "Strategy": "Strategy",
+    "Audience": "Audience",
+    "Data": "Data",
+    "Customer": "Customer",
+    "Group": "Group",
+    "Tag": "Tag",
+    "Setting": "Setting",
+    "SignOut": "Sign Out"
+  },
+  "Form": {
+    "FieldsRequired": "Fields required",
+    "Save": "Save"
+  },
+  "Marketing": {
+    "Campaign": "Campaign"
+  }
+}
