@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
         console.error('Failed to load axios:', error);
         throw new Error('Dependencies failed to load');
     }
+    console.log('client_secret: ' + process.env.NEXT_PUBLIC_TIKTOK_CLIENT_SECRET);
     var data = qs.stringify({
         'client_key': process.env.NEXT_PUBLIC_TIKTOK_CLIENT_KEY,
         'client_secret': process.env.NEXT_PUBLIC_TIKTOK_CLIENT_SECRET,
