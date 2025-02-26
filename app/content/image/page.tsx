@@ -53,7 +53,6 @@ const ContentImage: React.FC = () => {
                 // Fetch channels
                 const { data: channels, errors: listChannelsErrors } = await client.models.Channel.list({
                     filter: { is_deleted: { eq: false } },
-                    authMode: 'userPool'
                 });
                 if (listChannelsErrors) console.error('listChannelsErrors:', JSON.stringify(listChannelsErrors, null, 2));
                 // Set all channel IDs as selected by default
